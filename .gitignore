@@ -36,6 +36,9 @@ local.properties
 !/.idea/codeStyles/Project.xml
 !/.idea/codeStyles/codeStyleConfig.xml
 
+#AI
+CONTINUITY.md
+
 # Gradle cache
 .gradle
 
