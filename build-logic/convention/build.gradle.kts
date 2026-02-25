@@ -21,6 +21,7 @@ kotlin {
 
 dependencies {
     compileOnly(libs.android.gradlePlugin)
+    compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
 }
 
@@ -40,6 +41,13 @@ gradlePlugin {
                     .get()
                     .pluginId
             implementationClass = "AndroidApplicationConventionPlugin"
+        }
+        register("androidApplicationCompose") {
+            id =
+                libs.plugins.nonokt.android.application.compose
+                    .get()
+                    .pluginId
+            implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
     }
 }
