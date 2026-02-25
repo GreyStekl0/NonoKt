@@ -16,7 +16,12 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
  */
 internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
     commonExtension.apply {
-        compileSdk = 36
+        compileSdk {
+            version =
+                release(36) {
+                    minorApiLevel = 1
+                }
+        }
 
         defaultConfig.apply {
             minSdk = 28
