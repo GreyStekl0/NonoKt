@@ -34,6 +34,8 @@ rootProject.name = "NonoKt"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 
+include(":feature:home:impl")
+
 check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
     """
     NonoKt requires JDK 17+ but it is currently using JDK ${JavaVersion.current()}.
