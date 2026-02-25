@@ -40,3 +40,4 @@ nonokt-android-application = { id = "nonokt.android.application" }
 nonokt-android-application-compose = { id = "nonokt.android.application.compose" }
 nonokt-android-library = { id = "nonokt.android.library" }
 nonokt-android-library-compose = { id = "nonokt.android.library.compose" }
+nonokt-android-feature-impl = { id = "nonokt.android.feature.impl" }

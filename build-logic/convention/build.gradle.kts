@@ -64,5 +64,12 @@ gradlePlugin {
                     .pluginId
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
+        register("androidFeatureImpl") {
+            id =
+                libs.plugins.nonokt.android.feature.impl
+                    .get()
+                    .pluginId
+            implementationClass = "AndroidFeatureImplConventionPlugin"
+        }
     }
 }
