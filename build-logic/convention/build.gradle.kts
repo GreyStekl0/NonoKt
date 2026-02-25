@@ -32,4 +32,14 @@ tasks {
 }
 
 gradlePlugin {
+    plugins {
+        register("androidApplication") {
+            id =
+                libs.plugins.nonokt.android.application
+                    .asProvider()
+                    .get()
+                    .pluginId
+            implementationClass = "AndroidApplicationConventionPlugin"
+        }
+    }
 }
