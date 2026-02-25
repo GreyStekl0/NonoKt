@@ -39,3 +39,4 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 nonokt-android-application = { id = "nonokt.android.application" }
 nonokt-android-application-compose = { id = "nonokt.android.application.compose" }
 nonokt-android-library = { id = "nonokt.android.library" }
+nonokt-android-library-compose = { id = "nonokt.android.library.compose" }

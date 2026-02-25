@@ -57,5 +57,12 @@ gradlePlugin {
                     .pluginId
             implementationClass = "AndroidLibraryConventionPlugin"
         }
+        register("androidLibraryCompose") {
+            id =
+                libs.plugins.nonokt.android.library.compose
+                    .get()
+                    .pluginId
+            implementationClass = "AndroidLibraryComposeConventionPlugin"
+        }
     }
 }
