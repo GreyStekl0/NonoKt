@@ -12,6 +12,7 @@ abstract class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "com.android.application")
+            apply(plugin = "nonokt.lint")
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)

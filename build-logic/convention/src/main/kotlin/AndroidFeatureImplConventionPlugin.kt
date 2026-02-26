@@ -10,6 +10,7 @@ class AndroidFeatureImplConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "nonokt.android.library")
+            apply(plugin = "nonokt.koin")
 
             extensions.configure<LibraryExtension> {
                 testOptions.animationsDisabled = true

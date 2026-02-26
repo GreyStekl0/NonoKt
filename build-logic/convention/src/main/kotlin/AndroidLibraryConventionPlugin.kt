@@ -2,19 +2,16 @@ import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import dev.stekl0.nonokt.configureKotlinAndroid
 import dev.stekl0.nonokt.disableUnnecessaryAndroidTests
-import dev.stekl0.nonokt.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.configuration.BuildFeatures
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
-import javax.inject.Inject
 
 abstract class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "com.android.library")
+            apply(plugin = "nonokt.lint")
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
