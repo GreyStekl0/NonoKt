@@ -1,4 +1,4 @@
-package dev.stekl0.feature.home.impl
+package dev.stekl0.nonokt.feature.levels.impl
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -8,7 +8,7 @@ import pro.respawn.flowmvi.compose.dsl.subscribe
 import pro.respawn.flowmvi.compose.preview.EmptyReceiver
 
 @Composable
-internal fun HomeScreen(viewModel: HomeViewModel) =
+internal fun LevelsScreen(viewModel: LevelsViewModel) =
     with(viewModel.store) {
         val state by subscribe { action ->
             when (action) {
@@ -16,11 +16,11 @@ internal fun HomeScreen(viewModel: HomeViewModel) =
             }
         }
 
-        HomeScreenContent(state)
+        LevelsScreenContent(state)
     }
 
 @Composable
-private fun IntentReceiver<HomeIntent>.HomeScreenContent(state: HomeState) {
+private fun IntentReceiver<LevelsIntent>.LevelsScreenContent(state: LevelsState) {
     when (state) {
         //
         else -> TODO()
@@ -29,7 +29,7 @@ private fun IntentReceiver<HomeIntent>.HomeScreenContent(state: HomeState) {
 
 @Composable
 @Preview
-private fun HomeScreenPreview() =
+private fun LevelsScreenPreview() =
     EmptyReceiver {
-        HomeScreenContent(TODO())
+        LevelsScreenContent(TODO())
     }

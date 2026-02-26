@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.stekl0.feature.home.impl"
+    namespace = "dev.stekl0.nonokt.feature.levels.impl"
     testOptions.unitTests.isIncludeAndroidResources = true
 }
 

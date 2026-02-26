@@ -34,7 +34,7 @@ rootProject.name = "NonoKt"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 
-include(":feature:home:impl")
+include(":feature:levels:impl")
 
 check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
     """

@@ -1,4 +1,4 @@
-package dev.stekl0.feature.home.impl
+package dev.stekl0.nonokt.feature.levels.impl
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,13 +7,11 @@ import pro.respawn.flowmvi.api.PipelineContext
 import pro.respawn.flowmvi.dsl.lazyStore
 import pro.respawn.flowmvi.dsl.reduceLambdas
 
-private typealias Ctx = PipelineContext<HomeState, HomeIntent, HomeAction>
-
-internal class HomeViewModel :
+internal class LevelsViewModel :
     ViewModel(),
-    Container<HomeState, HomeIntent, HomeAction> {
+    Container<LevelsState, LevelsIntent, LevelsAction> {
     override val store by lazyStore(
-        initial = HomeState.Loading,
+        initial = LevelsState.Loading,
         scope = viewModelScope,
     ) {
         reduceLambdas()
