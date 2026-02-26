@@ -78,5 +78,12 @@ gradlePlugin {
                     .pluginId
             implementationClass = "AndroidFeatureApiConventionPlugin"
         }
+        register("androidKoin") {
+            id =
+                libs.plugins.nonokt.koin
+                    .get()
+                    .pluginId
+            implementationClass = "KoinConventionPlugin"
+        }
     }
 }
