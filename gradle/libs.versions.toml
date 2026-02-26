@@ -9,8 +9,12 @@ activityCompose = "1.12.4"
 kotlin = "2.3.10"
 composeBom = "2026.02.00"
 flowmvi = "3.2.1"
-koin-bom = "4.2.0"
+koin-bom = "4.2.0-RC1"
 koin-compiler = "0.3.0"
+detekt = "1.23.8"
+compose-rules = "0.5.6"
+detekt-koin = "1.0.0"
+kotlinter = "5.4.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,8 +42,12 @@ koin-annotations = { group = "io.insert-koin", name = "koin-annotations" }
 koin-android = { group = "io.insert-koin", name = "koin-android" }
 koin-compose = { group = "io.insert-koin", name = "koin-compose" }
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel" }
+detekt-compose = { group = "io.nlopez.compose.rules", name = "detekt", version.ref = "compose-rules" }
+detekt-koin = { group = "dev.androidbroadcast.rules.koin", name = "detekt-koin4-rules", version.ref = "detekt-koin" }
+ktlint-compose = { group = "io.nlopez.compose.rules", name = "ktlint", version.ref = "compose-rules" }
 
 # Dependencies of the included build-logic
+detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle-api", version.ref = "agp" }
 compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -49,6 +57,8 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-compiler" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 
 # Plugins defined by this project
 nonokt-android-application = { id = "nonokt.android.application" }
@@ -59,6 +69,7 @@ nonokt-android-feature-impl = { id = "nonokt.android.feature.impl" }
 nonokt-android-feature-api = { id = "nonokt.android.feature.api" }
 nonokt-jvm-library = { id = "nonokt.jvm.library" }
 nonokt-koin = { id = "nonokt.koin" }
+nonokt-lint = { id = "nonokt.lint" }
 
 [bundles]
 flowmvi = [

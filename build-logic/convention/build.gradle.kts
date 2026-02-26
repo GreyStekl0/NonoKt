@@ -23,6 +23,7 @@ dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.detekt.gradlePlugin)
 }
 
 tasks {
@@ -91,6 +92,13 @@ gradlePlugin {
                     .get()
                     .pluginId
             implementationClass = "KoinConventionPlugin"
+        }
+        register("lint") {
+            id =
+                libs.plugins.nonokt.lint
+                    .get()
+                    .pluginId
+            implementationClass = "LintConventionPlugin"
         }
     }
 }
