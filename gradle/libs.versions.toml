@@ -57,6 +57,7 @@ nonokt-android-library = { id = "nonokt.android.library" }
 nonokt-android-library-compose = { id = "nonokt.android.library.compose" }
 nonokt-android-feature-impl = { id = "nonokt.android.feature.impl" }
 nonokt-android-feature-api = { id = "nonokt.android.feature.api" }
+nonokt-jvm-library = { id = "nonokt.jvm.library" }
 nonokt-koin = { id = "nonokt.koin" }
 
 [bundles]

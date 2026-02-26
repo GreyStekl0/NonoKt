@@ -78,6 +78,13 @@ gradlePlugin {
                     .pluginId
             implementationClass = "AndroidFeatureApiConventionPlugin"
         }
+        register("jvmLibrary") {
+            id =
+                libs.plugins.nonokt.jvm.library
+                    .get()
+                    .pluginId
+            implementationClass = "JvmLibraryConventionPlugin"
+        }
         register("androidKoin") {
             id =
                 libs.plugins.nonokt.koin
