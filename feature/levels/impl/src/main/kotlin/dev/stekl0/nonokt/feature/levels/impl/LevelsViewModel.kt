@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import pro.respawn.flowmvi.api.Container
 import pro.respawn.flowmvi.api.PipelineContext
+import pro.respawn.flowmvi.dsl.intent
 import pro.respawn.flowmvi.dsl.lazyStore
 import pro.respawn.flowmvi.dsl.reduceLambdas
+import pro.respawn.flowmvi.dsl.updateState
 
 internal class LevelsViewModel :
     ViewModel(),
@@ -16,4 +18,11 @@ internal class LevelsViewModel :
     ) {
         reduceLambdas()
     }
+
+    fun onTabSelected(tab: Int) =
+        store.intent {
+            updateState<LevelsState.Content, _> {
+                copy(selectedTab = Tab.entries[tab])
+            }
+        }
 }

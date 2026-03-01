@@ -4,7 +4,17 @@ import pro.respawn.flowmvi.api.MVIAction
 import pro.respawn.flowmvi.api.MVIState
 import pro.respawn.flowmvi.dsl.LambdaIntent
 
+internal enum class Tab {
+    SMALL,
+    MEDIUM,
+    LARGE,
+}
+
 internal sealed interface LevelsState : MVIState {
+    data class Content(
+        val selectedTab: Tab = Tab.SMALL,
+    ) : LevelsState
+
     data object Loading : LevelsState
 
     data class Error(
