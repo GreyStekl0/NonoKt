@@ -8,6 +8,10 @@ class AndroidFeatureApiConventionPlugin : Plugin<Project> {
         with(target) {
             apply(plugin = "nonokt.android.library")
             apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
+
+            dependencies {
+                "api"(project(":core:navigation"))
+            }
         }
     }
 }

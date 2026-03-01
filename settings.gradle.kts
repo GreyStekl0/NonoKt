@@ -34,6 +34,7 @@ rootProject.name = "NonoKt"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 include(":core:designsystem")
+include(":core:navigation")
 
 include(":feature:levels:impl")
 

@@ -6,4 +6,5 @@ plugins {
     alias(libs.plugins.koin.compiler) apply false
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.kotlinter) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
 }
