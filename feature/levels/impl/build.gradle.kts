@@ -9,5 +9,6 @@ android {
 }
 
 dependencies {
+    implementation(projects.feature.levels.api)
     implementation(libs.bundles.flowmvi)
 }

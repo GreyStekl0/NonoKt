@@ -43,14 +43,14 @@ internal fun LevelsScreen(viewModel: LevelsViewModel) =
             }
         }
 
-        LevelsScreenContent(state, onTabSelected = viewModel::onTabSelected)
+        LevelsScreenContent(state, onTabSelect = viewModel::onTabSelected)
     }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun IntentReceiver<LevelsIntent>.LevelsScreenContent(
     state: LevelsState,
-    onTabSelected: (Int) -> Unit,
+    onTabSelect: (Int) -> Unit,
 ) {
     when (state) {
         is LevelsState.Content -> {
@@ -65,7 +65,7 @@ private fun IntentReceiver<LevelsIntent>.LevelsScreenContent(
                         Tab.entries.forEachIndexed { index, tab ->
                             Tab(
                                 selected = state.selectedTab == tab,
-                                onClick = { onTabSelected(index) },
+                                onClick = { onTabSelect(index) },
                             ) {
                                 Box(
                                     modifier =

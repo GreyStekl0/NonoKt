@@ -36,6 +36,7 @@ include(":app")
 include(":core:designsystem")
 include(":core:navigation")
 
+include(":feature:levels:api")
 include(":feature:levels:impl")
 
 check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
