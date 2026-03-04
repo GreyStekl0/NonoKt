@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import dev.stekl0.nonokt.core.designsystem.icon.BorderAll
 import dev.stekl0.nonokt.core.designsystem.icon.CropSquare
 import dev.stekl0.nonokt.core.designsystem.icon.GridOn
+import org.koin.compose.viewmodel.koinViewModel
 import pro.respawn.flowmvi.api.IntentReceiver
 import pro.respawn.flowmvi.compose.dsl.subscribe
 import pro.respawn.flowmvi.compose.preview.EmptyReceiver
@@ -35,7 +36,7 @@ private val Tab.icon: ImageVector
         }
 
 @Composable
-internal fun LevelsScreen(viewModel: LevelsViewModel) =
+internal fun LevelsScreen(viewModel: LevelsViewModel = koinViewModel()) =
     with(viewModel.store) {
         val state by subscribe { action ->
             when (action) {
