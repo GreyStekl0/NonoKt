@@ -30,5 +30,11 @@ android {
 }
 
 dependencies {
+    implementation(projects.feature.levels.api)
     implementation(projects.feature.levels.impl)
+
+    implementation(projects.core.designsystem)
+    implementation(projects.core.navigation)
+
+    implementation(libs.androidx.navigation3.ui)
 }

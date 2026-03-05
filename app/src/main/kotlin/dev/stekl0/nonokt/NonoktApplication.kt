@@ -5,12 +5,20 @@ import android.content.pm.ApplicationInfo
 import android.os.StrictMode
 import androidx.compose.runtime.Composer
 import androidx.compose.runtime.tooling.ComposeStackTraceMode
+import dev.stekl0.nonokt.feature.levels.impl.di.levelsFeatureModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 import android.os.StrictMode.ThreadPolicy.Builder as ThreadPolicyBuilder
 import android.os.StrictMode.VmPolicy.Builder as VmPolicyBuilder
 
 public class NonoktApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+
+        startKoin {
+            androidContext(this@NonoktApplication)
+            modules(levelsFeatureModule)
+        }
 
         Composer.setDiagnosticStackTraceMode(ComposeStackTraceMode.Auto)
 

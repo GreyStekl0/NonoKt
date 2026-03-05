@@ -47,6 +47,7 @@ detekt-compose = { group = "io.nlopez.compose.rules", name = "detekt", version.r
 detekt-koin = { group = "dev.androidbroadcast.rules.koin", name = "detekt-koin4-rules", version.ref = "detekt-koin" }
 ktlint-compose = { group = "io.nlopez.compose.rules", name = "ktlint", version.ref = "compose-rules" }
 androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "nav3" }
+androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "nav3" }
 
 # Dependencies of the included build-logic
 detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
