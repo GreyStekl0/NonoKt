@@ -13,7 +13,7 @@ koin-bom = "4.2.0-RC1"
 koin-compiler = "0.3.0"
 detekt = "1.23.8"
 compose-rules = "0.5.6"
-detekt-koin = "1.0.0"
+detekt-koin = "1.1.0"
 kotlinter = "5.4.2"
 nav3 = "1.0.1"
 
