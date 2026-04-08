@@ -30,5 +30,14 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.compose.material3)
+    implementation(projects.core.navigation)
+    implementation(projects.feature.levels.api)
     implementation(projects.feature.levels.impl)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.navigation3.ui)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
