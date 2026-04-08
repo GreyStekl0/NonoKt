@@ -1,76 +1,76 @@
 [versions]
+activityCompose = "1.13.0"
 agp = "9.1.0"
+androidxLifecycle = "2.10.0"
+compose-rules = "0.5.6"
+composeBom = "2026.03.01"
 coreKtx = "1.18.0"
+detekt = "1.23.8"
+detekt-koin = "1.1.0"
+espressoCore = "3.7.0"
+flowmvi = "3.2.1"
 junit = "4.13.2"
 junitVersion = "1.3.0"
-espressoCore = "3.7.0"
-androidxLifecycle = "2.10.0"
-activityCompose = "1.13.0"
-kotlin = "2.3.20"
-composeBom = "2026.03.01"
-flowmvi = "3.2.1"
 koin-bom = "4.2.0"
 koin-compiler = "0.6.2"
-detekt = "1.23.8"
-compose-rules = "0.5.6"
-detekt-koin = "1.1.0"
+kotlin = "2.3.20"
 kotlinter = "5.4.2"
 nav3 = "1.0.1"
 
 [libraries]
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
-androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
-androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-flowmvi-core = { group = "pro.respawn.flowmvi", name = "core", version.ref = "flowmvi" }
-flowmvi-compose = { group = "pro.respawn.flowmvi", name = "compose", version.ref = "flowmvi" }
-flowmvi-android = { group = "pro.respawn.flowmvi", name = "android", version.ref = "flowmvi" }
-koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin-bom" }
-koin-core = { group = "io.insert-koin", name = "koin-core" }
-koin-annotations = { group = "io.insert-koin", name = "koin-annotations" }
-koin-android = { group = "io.insert-koin", name = "koin-android" }
-koin-compose = { group = "io.insert-koin", name = "koin-compose" }
-koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel" }
-detekt-compose = { group = "io.nlopez.compose.rules", name = "detekt", version.ref = "compose-rules" }
-detekt-koin = { group = "dev.androidbroadcast.rules.koin", name = "detekt-koin4-rules", version.ref = "detekt-koin" }
-ktlint-compose = { group = "io.nlopez.compose.rules", name = "ktlint", version.ref = "compose-rules" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
 androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "nav3" }
 androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "nav3" }
+detekt-compose = { group = "io.nlopez.compose.rules", name = "detekt", version.ref = "compose-rules" }
+detekt-koin = { group = "dev.androidbroadcast.rules.koin", name = "detekt-koin4-rules", version.ref = "detekt-koin" }
+flowmvi-android = { group = "pro.respawn.flowmvi", name = "android", version.ref = "flowmvi" }
+flowmvi-compose = { group = "pro.respawn.flowmvi", name = "compose", version.ref = "flowmvi" }
+flowmvi-core = { group = "pro.respawn.flowmvi", name = "core", version.ref = "flowmvi" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+koin-android = { group = "io.insert-koin", name = "koin-android" }
+koin-annotations = { group = "io.insert-koin", name = "koin-annotations" }
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin-bom" }
+koin-compose = { group = "io.insert-koin", name = "koin-compose" }
+koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel" }
+koin-core = { group = "io.insert-koin", name = "koin-core" }
+ktlint-compose = { group = "io.nlopez.compose.rules", name = "ktlint", version.ref = "compose-rules" }
 
 # Dependencies of the included build-logic
-detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle-api", version.ref = "agp" }
 compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-compiler" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-compiler" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 # Plugins defined by this project
 nonokt-android-application = { id = "nonokt.android.application" }
 nonokt-android-application-compose = { id = "nonokt.android.application.compose" }
+nonokt-android-feature-api = { id = "nonokt.android.feature.api" }
+nonokt-android-feature-impl = { id = "nonokt.android.feature.impl" }
 nonokt-android-library = { id = "nonokt.android.library" }
 nonokt-android-library-compose = { id = "nonokt.android.library.compose" }
-nonokt-android-feature-impl = { id = "nonokt.android.feature.impl" }
-nonokt-android-feature-api = { id = "nonokt.android.feature.api" }
 nonokt-jvm-library = { id = "nonokt.jvm.library" }
 nonokt-koin = { id = "nonokt.koin" }
 nonokt-lint = { id = "nonokt.lint" }
