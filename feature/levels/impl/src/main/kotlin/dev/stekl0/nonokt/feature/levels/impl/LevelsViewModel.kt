@@ -1,13 +1,14 @@
+@file:Suppress("AnnotationProcessorNotConfigured")
+
 package dev.stekl0.nonokt.feature.levels.impl
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import pro.respawn.flowmvi.api.Container
 import pro.respawn.flowmvi.dsl.intent
 import pro.respawn.flowmvi.dsl.lazyStore
@@ -17,11 +18,10 @@ import pro.respawn.flowmvi.plugins.asyncInit
 import pro.respawn.flowmvi.plugins.recover
 
 @KoinViewModel
-internal class LevelsViewModel :
-    ViewModel(),
-    KoinComponent,
+internal class LevelsViewModel(
+    private val appContext: Context,
+) : ViewModel(),
     Container<LevelsState, LevelsIntent, LevelsAction> {
-    private val appContext: Context by inject()
     private val json = Json { ignoreUnknownKeys = true }
 
     override val store by lazyStore(
@@ -35,9 +35,10 @@ internal class LevelsViewModel :
         }
         asyncInit(Dispatchers.IO) {
             val levelPacks =
-                Tab.entries.associateWith { tab ->
-                    loadLevelPack(tab.assetPath)
-                }
+                Tab.entries
+                    .associateWith { tab ->
+                        loadLevelPack(tab.assetPath)
+                    }.toImmutableMap()
 
             updateState {
                 LevelsState.Content(levelPacks = levelPacks)
@@ -57,6 +58,6 @@ internal class LevelsViewModel :
             .open(assetPath)
             .bufferedReader()
             .use { reader ->
-                json.decodeFromString<LevelPack>(reader.readText())
+                json.decodeFromString<LevelPackPayload>(reader.readText()).toModel()
             }
 }
