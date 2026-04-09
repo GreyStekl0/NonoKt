@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.nonokt.android.feature.impl)
     alias(libs.plugins.nonokt.android.library.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -11,4 +12,5 @@ android {
 dependencies {
     implementation(projects.feature.levels.api)
     implementation(libs.bundles.flowmvi)
+    implementation(libs.kotlinx.serialization.json)
 }
