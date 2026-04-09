@@ -13,6 +13,7 @@ public class Navigator(
      * @param key - the navigation key to navigate to.
      */
     public fun navigate(key: NavKey) {
+        state.backStack.remove(key) // singleTop-like
         state.backStack.add(key)
     }
 
@@ -25,5 +26,4 @@ public class Navigator(
 }
 
 @Composable
-public fun rememberNavigator(state: NavigationState): Navigator =
-    remember(state) { Navigator(state) }
+public fun rememberNavigator(state: NavigationState): Navigator = remember(state) { Navigator(state) }
