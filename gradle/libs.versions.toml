@@ -18,6 +18,7 @@ kotlinxSerialization = "1.10.0"
 immutableCollections = "0.4.0"
 kotlinter = "5.4.2"
 nav3 = "1.1.0"
+timber = "5.0.1"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -52,6 +53,7 @@ koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmo
 koin-core = { group = "io.insert-koin", name = "koin-core" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "immutableCollections" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 ktlint-compose = { group = "io.nlopez.compose.rules", name = "ktlint", version.ref = "compose-rules" }
 
 # Dependencies of the included build-logic

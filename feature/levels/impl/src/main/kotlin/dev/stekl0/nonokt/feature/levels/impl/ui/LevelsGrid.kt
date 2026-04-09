@@ -95,11 +95,7 @@ private fun LevelThumbnail(
 ) {
     Canvas(modifier = modifier) {
         val rows = level.solution.size
-        val columns = level.solution.firstOrNull()?.length ?: 0
-
-        if (rows == 0 || columns == 0) {
-            return@Canvas
-        }
+        val columns = level.solution.first().length
 
         val cellSize = minOf(size.width / columns, size.height / rows)
         val boardWidth = columns * cellSize

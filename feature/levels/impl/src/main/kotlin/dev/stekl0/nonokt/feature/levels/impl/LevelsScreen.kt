@@ -1,5 +1,6 @@
 package dev.stekl0.nonokt.feature.levels.impl
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,8 +33,14 @@ import kotlinx.collections.immutable.toImmutableMap
 import org.koin.compose.viewmodel.koinViewModel
 import pro.respawn.flowmvi.compose.dsl.subscribe
 
-private val Tab.displayName: String
-    get() = name.lowercase().replaceFirstChar { firstChar -> firstChar.titlecase() }
+private val Tab.labelRes: Int
+    @StringRes
+    get() =
+        when (this) {
+            Tab.SMALL -> R.string.levels_tab_small
+            Tab.MEDIUM -> R.string.levels_tab_medium
+            Tab.LARGE -> R.string.levels_tab_large
+        }
 
 private val Tab.icon: ImageVector
     get() =
@@ -49,33 +56,16 @@ internal fun LevelsScreen(
     viewModel: LevelsViewModel = koinViewModel(),
 ) {
     val state by viewModel.store.subscribe()
-    Box(modifier = modifier) {
-        when (val currentState = state) {
-            is LevelsState.Content -> {
-                LevelsContent(
-                    state = currentState,
-                    onTabSelect = viewModel::onTabSelected,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            }
-
-            LevelsState.Loading -> {
-                LoadingState(Modifier.fillMaxSize())
-            }
-
-            is LevelsState.Error -> {
-                MessageState(
-                    text = currentState.cause?.message ?: "Failed to load levels.",
-                    modifier = Modifier.fillMaxSize(),
-                )
-            }
-        }
-    }
+    LevelsContent(
+        state = state,
+        onTabSelect = viewModel::onTabSelected,
+        modifier = modifier,
+    )
 }
 
 @Composable
 private fun LevelsContent(
-    state: LevelsState.Content,
+    state: LevelsState,
     onTabSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -124,7 +114,7 @@ private fun LevelsTabRow(
                 onClick = { onTabSelect(index) },
                 text = {
                     Text(
-                        text = tab.displayName.uppercase(),
+                        text = stringResource(tab.labelRes),
                         style = MaterialTheme.typography.labelLarge,
                     )
                 },
@@ -164,53 +154,17 @@ private fun EmptyLevelsState(
                     tint = MaterialTheme.colorScheme.primary,
                 )
                 Text(
-                    text = "No ${tab.displayName.lowercase()} levels yet",
+                    text = stringResource(R.string.levels_empty_title),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Text(
-                    text = "Add a level pack for this size and the grid will appear here.",
+                    text = stringResource(R.string.levels_empty_description),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun LoadingState(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            CircularProgressIndicator()
-            Text(
-                text = "Loading levels...",
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
-    }
-}
-
-@Composable
-private fun MessageState(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-        )
     }
 }
 
@@ -346,7 +300,7 @@ private val PreviewMediumLevels: List<Level> =
 private fun LevelsScreenSmallPreview() {
     LevelsContent(
         state =
-            LevelsState.Content(
+            LevelsState(
                 selectedTab = Tab.SMALL,
                 levelPacks = previewLevelPacks(),
             ),
@@ -359,7 +313,7 @@ private fun LevelsScreenSmallPreview() {
 private fun LevelsScreenMediumPreview() {
     LevelsContent(
         state =
-            LevelsState.Content(
+            LevelsState(
                 selectedTab = Tab.MEDIUM,
                 levelPacks = previewLevelPacks(),
             ),

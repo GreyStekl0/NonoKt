@@ -13,7 +13,6 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import pro.respawn.flowmvi.api.MVIAction
 import pro.respawn.flowmvi.api.MVIState
 import pro.respawn.flowmvi.dsl.LambdaIntent
 
@@ -32,26 +31,16 @@ internal enum class Tab {
             }
 }
 
-internal sealed interface LevelsState : MVIState {
-    @Immutable
-    data class Content(
-        val selectedTab: Tab = Tab.SMALL,
-        val levelPacks: ImmutableMap<Tab, LevelPack> = persistentMapOf(),
-    ) : LevelsState {
-        val levels: ImmutableList<Level>
-            get() = levelPacks[selectedTab]?.levels ?: persistentListOf()
-    }
-
-    data object Loading : LevelsState
-
-    data class Error(
-        val cause: Exception?,
-    ) : LevelsState
+@Immutable
+internal data class LevelsState(
+    val selectedTab: Tab = Tab.SMALL,
+    val levelPacks: ImmutableMap<Tab, LevelPack> = persistentMapOf(),
+) : MVIState {
+    val levels: ImmutableList<Level>
+        get() = levelPacks[selectedTab]?.levels ?: persistentListOf()
 }
 
-internal typealias LevelsIntent = LambdaIntent<LevelsState, LevelsAction>
-
-internal sealed interface LevelsAction : MVIAction
+internal typealias LevelsIntent = LambdaIntent<LevelsState, Nothing>
 
 @Serializable
 @Immutable
