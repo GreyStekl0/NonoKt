@@ -6,7 +6,13 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import pro.respawn.flowmvi.api.MVIAction
 import pro.respawn.flowmvi.api.MVIState
 import pro.respawn.flowmvi.dsl.LambdaIntent
@@ -47,16 +53,20 @@ internal typealias LevelsIntent = LambdaIntent<LevelsState, LevelsAction>
 
 internal sealed interface LevelsAction : MVIAction
 
+@Serializable
 @Immutable
 internal data class LevelPack(
+    @Serializable(with = LevelImmutableListSerializer::class)
     val levels: ImmutableList<Level>,
 ) {
     internal constructor(levels: List<Level>) : this(levels.toImmutableList())
 }
 
+@Serializable
 @Immutable
 internal data class Level(
     val id: String,
+    @Serializable(with = StringImmutableListSerializer::class)
     val solution: ImmutableList<String>,
 ) {
     internal constructor(id: String, solution: List<String>) : this(id, solution.toImmutableList())
@@ -68,21 +78,25 @@ internal data class Level(
         get() = solution.size
 }
 
-@Serializable
-internal data class LevelPackPayload(
-    val levels: List<LevelPayload>,
-)
+private class ImmutableListSerializer<T>(
+    elementSerializer: KSerializer<T>,
+) : KSerializer<ImmutableList<T>> {
+    private val delegate = ListSerializer(elementSerializer)
 
-@Serializable
-internal data class LevelPayload(
-    val id: String,
-    val solution: List<String>,
-)
+    override val descriptor: SerialDescriptor = delegate.descriptor
 
-internal fun LevelPackPayload.toModel(): LevelPack = LevelPack(levels = levels.map(LevelPayload::toModel))
+    override fun serialize(
+        encoder: Encoder,
+        value: ImmutableList<T>,
+    ) {
+        delegate.serialize(encoder, value)
+    }
 
-internal fun LevelPayload.toModel(): Level =
-    Level(
-        id = id,
-        solution = solution,
-    )
+    override fun deserialize(decoder: Decoder): ImmutableList<T> = delegate.deserialize(decoder).toImmutableList()
+}
+
+private object LevelImmutableListSerializer :
+    KSerializer<ImmutableList<Level>> by ImmutableListSerializer(Level.serializer())
+
+private object StringImmutableListSerializer :
+    KSerializer<ImmutableList<String>> by ImmutableListSerializer(String.serializer())

@@ -1,5 +1,3 @@
-@file:Suppress("AnnotationProcessorNotConfigured")
-
 package dev.stekl0.nonokt.feature.levels.impl
 
 import android.content.Context
@@ -58,6 +56,6 @@ internal class LevelsViewModel(
             .open(assetPath)
             .bufferedReader()
             .use { reader ->
-                json.decodeFromString<LevelPackPayload>(reader.readText()).toModel()
+                json.decodeFromString<LevelPack>(reader.readText())
             }
 }
