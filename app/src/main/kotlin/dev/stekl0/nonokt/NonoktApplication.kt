@@ -9,6 +9,7 @@ import dev.stekl0.nonokt.feature.levels.impl.di.LevelsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinApplication
 import org.koin.plugin.module.dsl.startKoin
+import timber.log.Timber
 import android.os.StrictMode.ThreadPolicy.Builder as ThreadPolicyBuilder
 import android.os.StrictMode.VmPolicy.Builder as VmPolicyBuilder
 
@@ -21,6 +22,7 @@ public class NonoktApplication : Application() {
             androidContext(this@NonoktApplication)
         }
 
+        setUpLogging()
         Composer.setDiagnosticStackTraceMode(ComposeStackTraceMode.Auto)
 
         setStrictModePolicy()
@@ -30,6 +32,12 @@ public class NonoktApplication : Application() {
      * Return true if the application is debuggable.
      */
     private fun isDebuggable(): Boolean = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+
+    private fun setUpLogging() {
+        if (!isDebuggable()) return
+
+        Timber.plant(Timber.DebugTree())
+    }
 
     /**
      * Set a thread policy that detects all potential problems on the main thread, such as network
