@@ -94,8 +94,8 @@ private fun LevelThumbnail(
     foregroundColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
     Canvas(modifier = modifier) {
-        val rows = level.solution.size
-        val columns = level.solution.first().length
+        val rows = level.height
+        val columns = level.width
 
         val cellSize = minOf(size.width / columns, size.height / rows)
         val boardWidth = columns * cellSize
