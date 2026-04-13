@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.nonokt.android.application)
     alias(libs.plugins.nonokt.android.application.compose)
     alias(libs.plugins.nonokt.koin)
+    alias(libs.plugins.hotswan.compiler)
 }
 
 android {
