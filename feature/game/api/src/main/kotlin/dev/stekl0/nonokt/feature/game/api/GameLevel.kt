@@ -22,7 +22,3 @@ public data class GameLevel(
 public data class GameNavKey(
     val level: GameLevel,
 ) : NavKey
-
-public fun Navigator.navigateToGame(level: GameLevel) {
-    navigate(GameNavKey(level))
-}
