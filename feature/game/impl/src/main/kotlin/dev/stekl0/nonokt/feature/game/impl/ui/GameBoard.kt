@@ -46,11 +46,11 @@ internal fun NonogramBoard(
             modifier = Modifier.fillMaxSize().padding(BoardPadding),
             contentAlignment = Alignment.Center,
         ) {
-            val totalColumns = state.maxRowHintCount + state.width
-            val totalRows = state.maxColumnHintCount + state.height
+            val totalColumns = state.maxRowHintCount + state.level.width
+            val totalRows = state.maxColumnHintCount + state.level.height
             val cellSize = minOf(maxWidth / totalColumns, maxHeight / totalRows)
-            val boardWidth = cellSize * state.width
-            val boardHeight = cellSize * state.height
+            val boardWidth = cellSize * state.level.width
+            val boardHeight = cellSize * state.level.height
             val rowHintWidth = cellSize * state.maxRowHintCount
             val columnHintHeight = cellSize * state.maxColumnHintCount
 
@@ -114,14 +114,14 @@ private fun ColumnHints(
     cellSize: Dp,
 ) {
     Row(
-        modifier = Modifier.width(cellSize * state.width),
+        modifier = Modifier.width(cellSize * state.level.width),
         horizontalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         state.columnHints.forEachIndexed { columnIndex, hint ->
             ColumnHint(
                 hint = hint,
                 columnIndex = columnIndex,
-                columnCount = state.width,
+                columnCount = state.level.width,
                 hintRowCount = state.maxColumnHintCount,
                 cellSize = cellSize,
             )
@@ -184,7 +184,7 @@ private fun RowHints(
             RowHint(
                 hint = hint,
                 rowIndex = rowIndex,
-                rowCount = state.height,
+                rowCount = state.level.height,
                 hintColumnCount = state.maxRowHintCount,
                 cellSize = cellSize,
             )
@@ -241,7 +241,7 @@ private fun BoardGrid(
     onCellPress: (Int, Int) -> Unit,
 ) {
     Column(
-        modifier = Modifier.width(cellSize * state.width),
+        modifier = Modifier.width(cellSize * state.level.width),
         verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         state.board.forEachIndexed { rowIndex, row ->
@@ -265,14 +265,14 @@ private fun BoardGrid(
                                 right =
                                     trailingVerticalStroke(
                                         columnIndex = columnIndex,
-                                        columnCount = state.width,
+                                        columnCount = state.level.width,
                                         thinGridStroke = ThinGridStroke,
                                         thickGridStroke = ThickGridStroke,
                                     ),
                                 bottom =
                                     trailingHorizontalStroke(
                                         rowIndex = rowIndex,
-                                        rowCount = state.height,
+                                        rowCount = state.level.height,
                                         thinGridStroke = ThinGridStroke,
                                         thickGridStroke = ThickGridStroke,
                                     ),

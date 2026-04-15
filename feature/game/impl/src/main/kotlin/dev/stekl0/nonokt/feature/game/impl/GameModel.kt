@@ -10,7 +10,7 @@ import pro.respawn.flowmvi.api.MVIState
 import pro.respawn.flowmvi.dsl.LambdaIntent
 
 internal object GameLimits {
-    const val MAX_ERROR_COUNT: Int = 4
+    const val MAX_ERROR_COUNT: Int = 3
 }
 
 @Immutable
@@ -24,12 +24,6 @@ internal data class GameState(
     val pastMoves: PersistentList<GameMove> = persistentListOf(),
     val futureMoves: PersistentList<GameMove> = persistentListOf(),
 ) : MVIState {
-    val width: Int
-        get() = level.width
-
-    val height: Int
-        get() = level.height
-
     val maxRowHintCount: Int
         get() = rowHints.maxOf(LineHint::size)
 
@@ -68,7 +62,12 @@ internal data class GameState(
         } else {
             copy(
                 board = board.updated(position = position, value = nextCellState),
-                errorCount = errorCount + nextErrorDelta(previous = previousCellState, next = nextCellState),
+                errorCount =
+                    errorCount +
+                        nextErrorDelta(
+                            previous = previousCellState,
+                            next = nextCellState,
+                        ),
                 pastMoves = pastMoves.add(GameMove(position, previousCellState, nextCellState)),
                 futureMoves = persistentListOf(),
             )

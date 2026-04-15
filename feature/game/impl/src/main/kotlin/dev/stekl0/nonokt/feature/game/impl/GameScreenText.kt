@@ -39,6 +39,6 @@ internal fun gameErrorsText(state: GameState): String =
 internal fun gameSizeText(state: GameState): String =
     stringResource(
         R.string.game_size_value,
-        state.width,
-        state.height,
+        state.level.width,
+        state.level.height,
     )
