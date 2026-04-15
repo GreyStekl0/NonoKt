@@ -38,6 +38,7 @@ include(":core:navigation")
 
 include(":feature:levels:api")
 include(":feature:levels:impl")
+include(":feature:game:impl")
 
 check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
     """
