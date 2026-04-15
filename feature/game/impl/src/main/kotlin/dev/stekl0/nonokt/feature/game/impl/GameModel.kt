@@ -19,6 +19,8 @@ internal data class GameState(
     val board: PersistentList<PersistentList<PlayerCellState>>,
     val rowHints: PersistentList<LineHint>,
     val columnHints: PersistentList<LineHint>,
+    val maxRowHintCount: Int,
+    val maxColumnHintCount: Int,
     val requiredFilledCellCount: Int,
     val filledCellCount: Int = 0,
     val mode: GameMode = GameMode.FILL,
@@ -26,12 +28,6 @@ internal data class GameState(
     val pastMoves: PersistentList<GameMove> = persistentListOf(),
     val futureMoves: PersistentList<GameMove> = persistentListOf(),
 ) : MVIState {
-    val maxRowHintCount: Int
-        get() = rowHints.maxOf(LineHint::size)
-
-    val maxColumnHintCount: Int
-        get() = columnHints.maxOf(LineHint::size)
-
     val canUndo: Boolean
         get() = pastMoves.isNotEmpty()
 
@@ -62,22 +58,25 @@ internal data class GameState(
         return if (nextCellState == previousCellState) {
             this
         } else {
-            val move = GameMove(position, previousCellState, nextCellState)
+            val stateAfterBoardChange =
+                applyBoardChange(
+                    position = position,
+                    previousCellState = previousCellState,
+                    nextCellState = nextCellState,
+                )
 
-            applyBoardChange(
-                position = position,
-                previousCellState = previousCellState,
-                nextCellState = nextCellState,
-            ).copy(
-                errorCount = if (nextCellState == PlayerCellState.ERROR) errorCount + 1 else errorCount,
-                pastMoves =
-                    if (nextCellState.isUndoLocked()) {
-                        pastMoves
-                    } else {
-                        pastMoves.add(move)
-                    },
-                futureMoves = persistentListOf(),
-            )
+            if (nextCellState.isUndoLocked()) {
+                stateAfterBoardChange.copy(
+                    errorCount = errorCount + 1,
+                    futureMoves = persistentListOf(),
+                )
+            } else {
+                val move = GameMove(position, previousCellState, nextCellState)
+                stateAfterBoardChange.copy(
+                    pastMoves = pastMoves.add(move),
+                    futureMoves = persistentListOf(),
+                )
+            }
         }
     }
 
@@ -115,12 +114,26 @@ internal data class GameState(
         position: CellPosition,
         previousCellState: PlayerCellState,
     ): PlayerCellState =
-        when {
-            previousCellState.isTapLocked() -> previousCellState
-            previousCellState == PlayerCellState.MARKED -> PlayerCellState.EMPTY
-            mode == GameMode.MARK -> PlayerCellState.MARKED
-            level.solution[position.row][position.column] == '1' -> PlayerCellState.FILLED
-            else -> PlayerCellState.ERROR
+        when (previousCellState) {
+            PlayerCellState.FILLED,
+            PlayerCellState.ERROR,
+            -> {
+                previousCellState
+            }
+
+            PlayerCellState.MARKED -> {
+                PlayerCellState.EMPTY
+            }
+
+            PlayerCellState.EMPTY -> {
+                if (mode == GameMode.MARK) {
+                    PlayerCellState.MARKED
+                } else if (level.solution[position.row][position.column] == '1') {
+                    PlayerCellState.FILLED
+                } else {
+                    PlayerCellState.ERROR
+                }
+            }
         }
 
     private fun applyBoardChange(
@@ -147,6 +160,10 @@ internal data class GameState(
         fun create(level: GameLevel): GameState {
             val size = level.size
             val rowHints = level.solution.map(::lineHint).toPersistentList()
+            val columnHints =
+                (0 until size)
+                    .map { column -> columnHint(level, column) }
+                    .toPersistentList()
             val requiredFilledCellCount = rowHints.sumOf { hint -> hint.values.sum() }
 
             return GameState(
@@ -156,10 +173,9 @@ internal data class GameState(
                         List(size = size) { PlayerCellState.EMPTY }.toPersistentList()
                     }.toPersistentList(),
                 rowHints = rowHints,
-                columnHints =
-                    (0 until size)
-                        .map { column -> columnHint(level, column) }
-                        .toPersistentList(),
+                columnHints = columnHints,
+                maxRowHintCount = rowHints.maxOf(LineHint::size),
+                maxColumnHintCount = columnHints.maxOf(LineHint::size),
                 requiredFilledCellCount = requiredFilledCellCount,
             )
         }
@@ -202,14 +218,33 @@ internal data class CellPosition(
     val column: Int,
 )
 
-private fun lineHint(line: String): LineHint {
+private fun lineHint(line: String): LineHint =
+    buildLineHint(
+        length = line.length,
+        cellAt = line::get,
+    )
+
+private fun columnHint(
+    level: GameLevel,
+    column: Int,
+): LineHint =
+    buildLineHint(
+        length = level.size,
+        cellAt = { row -> level.solution[row][column] },
+    )
+
+private inline fun buildLineHint(
+    length: Int,
+    cellAt: (Int) -> Char,
+): LineHint {
     var filledCellCount = 0
 
     val values =
         buildList {
             var runLength = 0
 
-            line.forEach { cell ->
+            repeat(length) { index ->
+                val cell = cellAt(index)
                 if (cell == '1') {
                     runLength += 1
                     filledCellCount += 1
@@ -224,40 +259,9 @@ private fun lineHint(line: String): LineHint {
 
     return LineHint(
         values = values.ifEmpty { listOf(0) }.toPersistentList(),
-        isFullyFilled = filledCellCount == line.length,
+        isFullyFilled = filledCellCount == length,
     )
 }
-
-private fun columnHint(
-    level: GameLevel,
-    column: Int,
-): LineHint {
-    var filledCellCount = 0
-
-    val values =
-        buildList {
-            var runLength = 0
-
-            repeat(level.size) { row ->
-                if (level.solution[row][column] == '1') {
-                    runLength += 1
-                    filledCellCount += 1
-                } else if (runLength > 0) {
-                    add(runLength)
-                    runLength = 0
-                }
-            }
-
-            if (runLength > 0) add(runLength)
-        }
-
-    return LineHint(
-        values = values.ifEmpty { listOf(0) }.toPersistentList(),
-        isFullyFilled = filledCellCount == level.size,
-    )
-}
-
-private fun PlayerCellState.isTapLocked(): Boolean = this == PlayerCellState.FILLED || this == PlayerCellState.ERROR
 
 private fun PlayerCellState.isUndoLocked(): Boolean = this == PlayerCellState.ERROR
 
