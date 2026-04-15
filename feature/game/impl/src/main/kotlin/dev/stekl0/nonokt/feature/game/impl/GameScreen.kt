@@ -37,8 +37,9 @@ import androidx.compose.ui.unit.dp
 import dev.stekl0.nonokt.feature.game.api.GameLevel
 import dev.stekl0.nonokt.feature.game.impl.GameLimits.MAX_ERROR_COUNT
 import dev.stekl0.nonokt.feature.game.impl.ui.NonogramBoard
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import pro.respawn.flowmvi.compose.dsl.subscribe
-import androidx.lifecycle.viewmodel.compose.viewModel as composeViewModel
 
 private val ScreenHorizontalPadding = 16.dp
 private val ScreenVerticalPadding = 12.dp
@@ -49,7 +50,7 @@ internal fun GameRoute(
     level: GameLevel,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: GameViewModel = composeViewModel(factory = GameViewModel.factory(level)),
+    viewModel: GameViewModel = koinViewModel(parameters = { parametersOf(level) }),
 ) {
     val state by viewModel.store.subscribe()
 

@@ -1,18 +1,18 @@
 package dev.stekl0.nonokt.feature.game.impl
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import dev.stekl0.nonokt.feature.game.api.GameLevel
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 import pro.respawn.flowmvi.api.Container
 import pro.respawn.flowmvi.dsl.intent
 import pro.respawn.flowmvi.dsl.reduceLambdas
 import pro.respawn.flowmvi.dsl.store
 
+@KoinViewModel
 internal class GameViewModel(
-    level: GameLevel,
+    @InjectedParam level: GameLevel,
 ) : ViewModel(),
     Container<GameState, GameIntent, Nothing> {
     override val store =
@@ -52,13 +52,4 @@ internal class GameViewModel(
                 redo()
             }
         }
-
-    internal companion object {
-        fun factory(level: GameLevel): ViewModelProvider.Factory =
-            viewModelFactory {
-                initializer {
-                    GameViewModel(level = level)
-                }
-            }
-    }
 }
