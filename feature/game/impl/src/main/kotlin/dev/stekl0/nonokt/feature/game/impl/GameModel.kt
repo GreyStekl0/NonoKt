@@ -60,6 +60,8 @@ internal data class GameState(
         return if (nextCellState == previousCellState) {
             this
         } else {
+            val move = GameMove(position, previousCellState, nextCellState)
+
             copy(
                 board = board.updated(position = position, value = nextCellState),
                 errorCount =
@@ -68,7 +70,7 @@ internal data class GameState(
                             previous = previousCellState,
                             next = nextCellState,
                         ),
-                pastMoves = pastMoves.add(GameMove(position, previousCellState, nextCellState)),
+                pastMoves = if (nextCellState.isUndoLocked()) pastMoves else pastMoves.add(move),
                 futureMoves = persistentListOf(),
             )
         }
@@ -118,16 +120,12 @@ internal data class GameState(
     private fun resolveNextCellState(
         position: CellPosition,
         previousCellState: PlayerCellState,
-    ): PlayerCellState =
-        when (mode) {
+    ): PlayerCellState {
+        if (previousCellState.isTapLocked()) return previousCellState
+
+        return when (mode) {
             GameMode.FILL -> {
                 when (previousCellState) {
-                    PlayerCellState.FILLED,
-                    PlayerCellState.ERROR,
-                    -> {
-                        PlayerCellState.EMPTY
-                    }
-
                     PlayerCellState.EMPTY,
                     PlayerCellState.MARKED,
                     -> {
@@ -136,6 +134,12 @@ internal data class GameState(
                         } else {
                             PlayerCellState.ERROR
                         }
+                    }
+
+                    PlayerCellState.FILLED,
+                    PlayerCellState.ERROR,
+                    -> {
+                        previousCellState
                     }
                 }
             }
@@ -147,6 +151,7 @@ internal data class GameState(
                 }
             }
         }
+    }
 
     private fun nextErrorDelta(
         previous: PlayerCellState,
@@ -164,7 +169,11 @@ internal data class GameState(
                         List(size = size) { PlayerCellState.EMPTY }.toPersistentList()
                     }.toPersistentList(),
                 rowHints = level.solution.map(::lineHint).toPersistentList(),
-                columnHints = (0 until size).map(level::columnLine).map(::lineHint).toPersistentList(),
+                columnHints =
+                    (0 until size)
+                        .map(level::columnLine)
+                        .map(::lineHint)
+                        .toPersistentList(),
             )
         }
     }
@@ -235,6 +244,11 @@ private fun GameLevel.columnLine(column: Int): String =
             append(solution[row][column])
         }
     }
+
+private fun PlayerCellState.isTapLocked(): Boolean =
+    this == PlayerCellState.FILLED || this == PlayerCellState.MARKED || this == PlayerCellState.ERROR
+
+private fun PlayerCellState.isUndoLocked(): Boolean = this == PlayerCellState.ERROR
 
 private fun PersistentList<PersistentList<PlayerCellState>>.updated(
     position: CellPosition,
