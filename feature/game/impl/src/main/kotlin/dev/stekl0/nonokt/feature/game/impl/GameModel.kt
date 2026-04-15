@@ -60,17 +60,15 @@ internal data class GameState(
         return if (nextCellState == previousCellState) {
             this
         } else {
-            val move = GameMove(position, previousCellState, nextCellState)
-
             copy(
                 board = board.updated(position = position, value = nextCellState),
-                errorCount =
-                    errorCount +
-                        nextErrorDelta(
-                            previous = previousCellState,
-                            next = nextCellState,
-                        ),
-                pastMoves = if (nextCellState.isUndoLocked()) pastMoves else pastMoves.add(move),
+                errorCount = if (nextCellState == PlayerCellState.ERROR) errorCount + 1 else errorCount,
+                pastMoves =
+                    if (nextCellState.isUndoLocked()) {
+                        pastMoves
+                    } else {
+                        pastMoves.add(GameMove(position, previousCellState, nextCellState))
+                    },
                 futureMoves = persistentListOf(),
             )
         }
@@ -111,7 +109,7 @@ internal data class GameState(
                 if (shouldBeFilled) {
                     currentCell == PlayerCellState.FILLED
                 } else {
-                    currentCell != PlayerCellState.FILLED && currentCell != PlayerCellState.ERROR
+                    currentCell != PlayerCellState.FILLED
                 }
             }
         }
@@ -120,43 +118,13 @@ internal data class GameState(
     private fun resolveNextCellState(
         position: CellPosition,
         previousCellState: PlayerCellState,
-    ): PlayerCellState {
-        if (previousCellState.isTapLocked()) return previousCellState
-
-        return when (mode) {
-            GameMode.FILL -> {
-                when (previousCellState) {
-                    PlayerCellState.EMPTY,
-                    PlayerCellState.MARKED,
-                    -> {
-                        if (level.solution[position.row][position.column] == '1') {
-                            PlayerCellState.FILLED
-                        } else {
-                            PlayerCellState.ERROR
-                        }
-                    }
-
-                    PlayerCellState.FILLED,
-                    PlayerCellState.ERROR,
-                    -> {
-                        previousCellState
-                    }
-                }
-            }
-
-            GameMode.MARK -> {
-                when (previousCellState) {
-                    PlayerCellState.MARKED -> PlayerCellState.EMPTY
-                    else -> PlayerCellState.MARKED
-                }
-            }
+    ): PlayerCellState =
+        when {
+            previousCellState.isTapLocked() -> previousCellState
+            mode == GameMode.MARK -> PlayerCellState.MARKED
+            level.solution[position.row][position.column] == '1' -> PlayerCellState.FILLED
+            else -> PlayerCellState.ERROR
         }
-    }
-
-    private fun nextErrorDelta(
-        previous: PlayerCellState,
-        next: PlayerCellState,
-    ): Int = if (previous != PlayerCellState.ERROR && next == PlayerCellState.ERROR) 1 else 0
 
     internal companion object {
         fun create(level: GameLevel): GameState {
