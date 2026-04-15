@@ -9,5 +9,9 @@ android {
 }
 
 dependencies {
+    implementation(projects.feature.game.api)
     implementation(libs.bundles.flowmvi)
+    implementation(libs.kotlinx.collections.immutable)
+
+    testImplementation(libs.junit)
 }

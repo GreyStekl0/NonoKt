@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import dev.stekl0.nonokt.core.designsystem.icon.BorderAll
 import dev.stekl0.nonokt.core.designsystem.icon.CropSquare
 import dev.stekl0.nonokt.core.designsystem.icon.GridOn
+import dev.stekl0.nonokt.feature.game.api.GameLevel
 import dev.stekl0.nonokt.feature.levels.impl.ui.LevelsGrid
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
@@ -53,6 +54,7 @@ private val Tab.icon: ImageVector
 
 @Composable
 internal fun LevelsScreen(
+    onLevelClick: (GameLevel) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LevelsViewModel = koinViewModel(),
 ) {
@@ -60,6 +62,7 @@ internal fun LevelsScreen(
     LevelsContent(
         state = state,
         onTabSelect = viewModel::onTabSelected,
+        onLevelClick = onLevelClick,
         modifier = modifier,
     )
 }
@@ -68,6 +71,7 @@ internal fun LevelsScreen(
 private fun LevelsContent(
     state: LevelsState,
     onTabSelect: (Int) -> Unit,
+    onLevelClick: (GameLevel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -90,6 +94,7 @@ private fun LevelsContent(
         } else {
             LevelsGrid(
                 levels = state.levels,
+                onLevelClick = onLevelClick,
                 modifier =
                     Modifier
                         .fillMaxSize()
@@ -169,9 +174,9 @@ private fun EmptyLevelsState(
     }
 }
 
-private val PreviewSmallLevels: List<Level> =
+private val PreviewSmallLevels: List<GameLevel> =
     listOf(
-        Level(
+        GameLevel(
             id = "small_5x5",
             solution =
                 listOf(
@@ -182,7 +187,7 @@ private val PreviewSmallLevels: List<Level> =
                     "00100",
                 ),
         ),
-        Level(
+        GameLevel(
             id = "small_9x9",
             solution =
                 listOf(
@@ -197,7 +202,7 @@ private val PreviewSmallLevels: List<Level> =
                     "000111000",
                 ),
         ),
-        Level(
+        GameLevel(
             id = "small_7x7",
             solution =
                 listOf(
@@ -210,7 +215,7 @@ private val PreviewSmallLevels: List<Level> =
                     "1000001",
                 ),
         ),
-        Level(
+        GameLevel(
             id = "small_8x8",
             solution =
                 listOf(
@@ -226,9 +231,9 @@ private val PreviewSmallLevels: List<Level> =
         ),
     )
 
-private val PreviewMediumLevels: List<Level> =
+private val PreviewMediumLevels: List<GameLevel> =
     listOf(
-        Level(
+        GameLevel(
             id = "medium_10x10",
             solution =
                 listOf(
@@ -244,7 +249,7 @@ private val PreviewMediumLevels: List<Level> =
                     "0001111000",
                 ),
         ),
-        Level(
+        GameLevel(
             id = "medium_12x12",
             solution =
                 listOf(
@@ -262,7 +267,7 @@ private val PreviewMediumLevels: List<Level> =
                     "000011110000",
                 ),
         ),
-        Level(
+        GameLevel(
             id = "medium_11x11",
             solution =
                 listOf(
@@ -279,7 +284,7 @@ private val PreviewMediumLevels: List<Level> =
                     "10000000001",
                 ),
         ),
-        Level(
+        GameLevel(
             id = "medium_9x9",
             solution =
                 listOf(
@@ -306,6 +311,7 @@ private fun LevelsScreenSmallPreview() {
                 levelPacks = previewLevelPacks(),
             ),
         onTabSelect = {},
+        onLevelClick = {},
     )
 }
 
@@ -319,6 +325,7 @@ private fun LevelsScreenMediumPreview() {
                 levelPacks = previewLevelPacks(),
             ),
         onTabSelect = {},
+        onLevelClick = {},
     )
 }
 

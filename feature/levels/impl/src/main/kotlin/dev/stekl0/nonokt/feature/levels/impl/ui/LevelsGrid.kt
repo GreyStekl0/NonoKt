@@ -2,6 +2,7 @@ package dev.stekl0.nonokt.feature.levels.impl.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,9 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.stekl0.nonokt.feature.levels.impl.Level
+import dev.stekl0.nonokt.feature.game.api.GameLevel
 import kotlinx.collections.immutable.ImmutableList
 
 private val LevelGridSpacing: Dp = 12.dp
@@ -36,7 +38,8 @@ private object LevelsGridLayout {
 
 @Composable
 internal fun LevelsGrid(
-    levels: ImmutableList<Level>,
+    levels: ImmutableList<GameLevel>,
+    onLevelClick: (GameLevel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
@@ -48,20 +51,28 @@ internal fun LevelsGrid(
     ) {
         items(
             items = levels,
-            key = Level::id,
+            key = GameLevel::id,
         ) { level ->
-            LevelTile(level = level)
+            LevelTile(
+                level = level,
+                onClick = { onLevelClick(level) },
+            )
         }
     }
 }
 
 @Composable
 private fun LevelTile(
-    level: Level,
+    level: GameLevel,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     OutlinedCard(
-        modifier = modifier.aspectRatio(1f),
+        modifier =
+            modifier
+                .aspectRatio(1f)
+                .testTag("level:${level.id}")
+                .clickable(onClick = onClick),
         border =
             BorderStroke(
                 width = LevelTileBorderWidth,
@@ -89,7 +100,7 @@ private fun LevelTile(
 
 @Composable
 private fun LevelThumbnail(
-    level: Level,
+    level: GameLevel,
     modifier: Modifier = Modifier,
     foregroundColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {

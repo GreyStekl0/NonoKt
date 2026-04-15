@@ -1,0 +1,18 @@
+<resources>
+    <string name="game_back">Назад</string>
+    <string name="game_errors_title">Ошибки</string>
+    <string name="game_errors_value">%1$d / %2$d</string>
+    <string name="game_size_title">Размер</string>
+    <string name="game_size_value">%1$d x %2$d</string>
+    <string name="game_undo">Назад</string>
+    <string name="game_redo">Вперед</string>
+    <string name="game_mode_fill">Решение</string>
+    <string name="game_mode_mark">Пометки</string>
+    <string name="game_status_solved">Головоломка решена.</string>
+    <string name="game_status_failed">Лимит ошибок исчерпан. Кнопки назад и вперед остаются доступными, но новые ходы заблокированы.</string>
+    <string name="game_status_fill_mode">Режим решения: отмечай клетки, которые входят в ответ.</string>
+    <string name="game_status_mark_mode">Режим пометок: перечеркивай клетки, которые хочешь исключить для себя.</string>
+    <string name="game_progress_in_progress">В процессе</string>
+    <string name="game_progress_solved">Решено</string>
+    <string name="game_progress_failed">Проиграно</string>
+</resources>

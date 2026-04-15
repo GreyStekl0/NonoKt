@@ -1,0 +1,18 @@
+<resources>
+    <string name="game_back">Back</string>
+    <string name="game_errors_title">Errors</string>
+    <string name="game_errors_value">%1$d / %2$d</string>
+    <string name="game_size_title">Size</string>
+    <string name="game_size_value">%1$d x %2$d</string>
+    <string name="game_undo">Undo</string>
+    <string name="game_redo">Redo</string>
+    <string name="game_mode_fill">Fill</string>
+    <string name="game_mode_mark">Mark</string>
+    <string name="game_status_solved">Puzzle solved.</string>
+    <string name="game_status_failed">Too many mistakes. Undo and redo stay available, but new moves are blocked.</string>
+    <string name="game_status_fill_mode">Fill mode: tap cells that belong to the solution.</string>
+    <string name="game_status_mark_mode">Mark mode: cross cells that you want to exclude for yourself.</string>
+    <string name="game_progress_in_progress">In progress</string>
+    <string name="game_progress_solved">Solved</string>
+    <string name="game_progress_failed">Failed</string>
+</resources>

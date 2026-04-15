@@ -1,0 +1,356 @@
+package dev.stekl0.nonokt.feature.game.impl.ui
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import dev.stekl0.nonokt.feature.game.impl.GameState
+import dev.stekl0.nonokt.feature.game.impl.LineHint
+import dev.stekl0.nonokt.feature.game.impl.PlayerCellState
+
+private val ThinGridStroke: Dp = 0.75.dp
+private val ThickGridStroke: Dp = 1.75.dp
+private val BoardPadding: Dp = 12.dp
+
+@Composable
+internal fun NonogramBoard(
+    state: GameState,
+    onCellPress: (Int, Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.extraLarge,
+        tonalElevation = 2.dp,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+    ) {
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxSize().padding(BoardPadding),
+            contentAlignment = Alignment.Center,
+        ) {
+            val totalColumns = state.maxRowHintCount + state.width
+            val totalRows = state.maxColumnHintCount + state.height
+            val cellSize = minOf(maxWidth / totalColumns, maxHeight / totalRows)
+            val boardWidth = cellSize * state.width
+            val boardHeight = cellSize * state.height
+            val rowHintWidth = cellSize * state.maxRowHintCount
+            val columnHintHeight = cellSize * state.maxColumnHintCount
+
+            Column(
+                modifier = Modifier.width(rowHintWidth + boardWidth),
+                verticalArrangement = Arrangement.spacedBy(0.dp),
+            ) {
+                Row(modifier = Modifier.height(columnHintHeight)) {
+                    HintCorner(
+                        width = rowHintWidth,
+                        height = columnHintHeight,
+                    )
+                    ColumnHints(
+                        state = state,
+                        cellSize = cellSize,
+                    )
+                }
+                Row(modifier = Modifier.height(boardHeight)) {
+                    RowHints(
+                        state = state,
+                        cellSize = cellSize,
+                    )
+                    BoardGrid(
+                        state = state,
+                        cellSize = cellSize,
+                        onCellPress = onCellPress,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HintCorner(
+    width: Dp,
+    height: Dp,
+) {
+    Box(
+        modifier =
+            Modifier
+                .width(width)
+                .height(height)
+                .drawHintDecoration(
+                    backgroundColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                    strokes =
+                        CellStrokeWidths(
+                            top = ThickGridStroke,
+                            right = ThickGridStroke,
+                            bottom = ThickGridStroke,
+                            left = ThickGridStroke,
+                        ),
+                    lineColor = MaterialTheme.colorScheme.outline,
+                ),
+    )
+}
+
+@Composable
+private fun ColumnHints(
+    state: GameState,
+    cellSize: Dp,
+) {
+    Row(
+        modifier = Modifier.width(cellSize * state.width),
+        horizontalArrangement = Arrangement.spacedBy(0.dp),
+    ) {
+        state.columnHints.forEachIndexed { columnIndex, hint ->
+            ColumnHint(
+                hint = hint,
+                columnIndex = columnIndex,
+                columnCount = state.width,
+                hintRowCount = state.maxColumnHintCount,
+                cellSize = cellSize,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ColumnHint(
+    hint: LineHint,
+    columnIndex: Int,
+    columnCount: Int,
+    hintRowCount: Int,
+    cellSize: Dp,
+) {
+    val values = remember(hint, hintRowCount) { List(hintRowCount - hint.values.size) { null } + hint.values }
+
+    Column(
+        modifier = Modifier.width(cellSize),
+        verticalArrangement = Arrangement.spacedBy(0.dp),
+    ) {
+        values.forEachIndexed { hintRowIndex, value ->
+            HintCell(
+                value = value,
+                modifier = Modifier.size(width = cellSize, height = cellSize),
+                textColor = hintTextColor(hint),
+                strokes =
+                    CellStrokeWidths(
+                        top = if (hintRowIndex == 0) ThickGridStroke else ThinGridStroke,
+                        right =
+                            trailingVerticalStroke(
+                                columnIndex = columnIndex,
+                                columnCount = columnCount,
+                                thinGridStroke = ThinGridStroke,
+                                thickGridStroke = ThickGridStroke,
+                            ),
+                        bottom = if (hintRowIndex == hintRowCount - 1) ThickGridStroke else ThinGridStroke,
+                        left =
+                            leadingVerticalStroke(
+                                columnIndex = columnIndex,
+                                thinGridStroke = ThinGridStroke,
+                                thickGridStroke = ThickGridStroke,
+                            ),
+                    ),
+            )
+        }
+    }
+}
+
+@Composable
+private fun RowHints(
+    state: GameState,
+    cellSize: Dp,
+) {
+    Column(
+        modifier = Modifier.width(cellSize * state.maxRowHintCount),
+        verticalArrangement = Arrangement.spacedBy(0.dp),
+    ) {
+        state.rowHints.forEachIndexed { rowIndex, hint ->
+            RowHint(
+                hint = hint,
+                rowIndex = rowIndex,
+                rowCount = state.height,
+                hintColumnCount = state.maxRowHintCount,
+                cellSize = cellSize,
+            )
+        }
+    }
+}
+
+@Composable
+private fun RowHint(
+    hint: LineHint,
+    rowIndex: Int,
+    rowCount: Int,
+    hintColumnCount: Int,
+    cellSize: Dp,
+) {
+    val values = remember(hint, hintColumnCount) { List(hintColumnCount - hint.values.size) { null } + hint.values }
+
+    Row(
+        modifier = Modifier.height(cellSize),
+        horizontalArrangement = Arrangement.spacedBy(0.dp),
+    ) {
+        values.forEachIndexed { hintColumnIndex, value ->
+            HintCell(
+                value = value,
+                modifier = Modifier.size(width = cellSize, height = cellSize),
+                textColor = hintTextColor(hint),
+                strokes =
+                    CellStrokeWidths(
+                        top =
+                            leadingHorizontalStroke(
+                                rowIndex = rowIndex,
+                                thinGridStroke = ThinGridStroke,
+                                thickGridStroke = ThickGridStroke,
+                            ),
+                        right = if (hintColumnIndex == hintColumnCount - 1) ThickGridStroke else ThinGridStroke,
+                        bottom =
+                            trailingHorizontalStroke(
+                                rowIndex = rowIndex,
+                                rowCount = rowCount,
+                                thinGridStroke = ThinGridStroke,
+                                thickGridStroke = ThickGridStroke,
+                            ),
+                        left = if (hintColumnIndex == 0) ThickGridStroke else ThinGridStroke,
+                    ),
+            )
+        }
+    }
+}
+
+@Composable
+private fun BoardGrid(
+    state: GameState,
+    cellSize: Dp,
+    onCellPress: (Int, Int) -> Unit,
+) {
+    Column(
+        modifier = Modifier.width(cellSize * state.width),
+        verticalArrangement = Arrangement.spacedBy(0.dp),
+    ) {
+        state.board.forEachIndexed { rowIndex, row ->
+            Row(
+                modifier = Modifier.height(cellSize),
+                horizontalArrangement = Arrangement.spacedBy(0.dp),
+            ) {
+                row.forEachIndexed { columnIndex, cellState ->
+                    BoardCell(
+                        cellState = cellState,
+                        modifier = Modifier.size(width = cellSize, height = cellSize),
+                        enabled = state.isInteractionEnabled,
+                        strokes =
+                            CellStrokeWidths(
+                                top =
+                                    leadingHorizontalStroke(
+                                        rowIndex = rowIndex,
+                                        thinGridStroke = ThinGridStroke,
+                                        thickGridStroke = ThickGridStroke,
+                                    ),
+                                right =
+                                    trailingVerticalStroke(
+                                        columnIndex = columnIndex,
+                                        columnCount = state.width,
+                                        thinGridStroke = ThinGridStroke,
+                                        thickGridStroke = ThickGridStroke,
+                                    ),
+                                bottom =
+                                    trailingHorizontalStroke(
+                                        rowIndex = rowIndex,
+                                        rowCount = state.height,
+                                        thinGridStroke = ThinGridStroke,
+                                        thickGridStroke = ThickGridStroke,
+                                    ),
+                                left =
+                                    leadingVerticalStroke(
+                                        columnIndex = columnIndex,
+                                        thinGridStroke = ThinGridStroke,
+                                        thickGridStroke = ThickGridStroke,
+                                    ),
+                            ),
+                        onClick = { onCellPress(rowIndex, columnIndex) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HintCell(
+    value: Int?,
+    textColor: Color,
+    strokes: CellStrokeWidths,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier =
+            modifier.drawHintDecoration(
+                backgroundColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                strokes = strokes,
+                lineColor = MaterialTheme.colorScheme.outline,
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        value?.let {
+            Text(
+                text = it.toString(),
+                color = textColor,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+        }
+    }
+}
+
+@Composable
+private fun BoardCell(
+    cellState: PlayerCellState,
+    enabled: Boolean,
+    strokes: CellStrokeWidths,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    val backgroundColor =
+        when (cellState) {
+            PlayerCellState.EMPTY -> colorScheme.surfaceContainerLowest
+            PlayerCellState.FILLED -> colorScheme.onSurface
+            PlayerCellState.MARKED -> colorScheme.surfaceContainerLowest
+            PlayerCellState.ERROR -> colorScheme.errorContainer
+        }
+
+    val markerColor =
+        when (cellState) {
+            PlayerCellState.MARKED -> colorScheme.onSurfaceVariant
+            PlayerCellState.ERROR -> colorScheme.error
+            else -> Color.Unspecified
+        }
+
+    Box(
+        modifier =
+            modifier
+                .clickable(enabled = enabled, onClick = onClick)
+                .drawBoardDecoration(
+                    backgroundColor = backgroundColor,
+                    strokes = strokes,
+                    lineColor = colorScheme.outline,
+                    markerColor = markerColor,
+                ),
+    )
+}

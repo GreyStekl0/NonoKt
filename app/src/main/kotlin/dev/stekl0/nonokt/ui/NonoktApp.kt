@@ -10,6 +10,8 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import dev.stekl0.nonokt.core.navigation.rememberNavigationState
 import dev.stekl0.nonokt.core.navigation.rememberNavigator
+import dev.stekl0.nonokt.feature.game.api.navigateToGame
+import dev.stekl0.nonokt.feature.game.impl.navigation.gameEntry
 import dev.stekl0.nonokt.feature.levels.api.LevelsNavKey
 import dev.stekl0.nonokt.feature.levels.impl.navigation.levelsEntry
 
@@ -20,7 +22,8 @@ public fun NonoktApp(modifier: Modifier = Modifier) {
     val entryProvider =
         remember(navigator) {
             entryProvider {
-                levelsEntry()
+                levelsEntry(onLevelClick = { level -> navigator.navigateToGame(level) })
+                gameEntry(onBackClick = navigator::goBack)
             }
         }
 
