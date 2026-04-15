@@ -98,16 +98,22 @@ internal data class GameState(
 
     private fun cellStateAt(position: CellPosition): PlayerCellState = board[position.row][position.column]
 
-    private fun boardMatchesSolution(): Boolean =
-        level.solution.indices.all { row ->
-            level.solution[row].indices.all { column ->
+    private fun boardMatchesSolution(): Boolean {
+        val size = level.size
+
+        return (0 until size).all { row ->
+            (0 until size).all { column ->
                 val shouldBeFilled = level.solution[row][column] == '1'
-                when {
-                    shouldBeFilled -> board[row][column] == PlayerCellState.FILLED
-                    else -> board[row][column] != PlayerCellState.FILLED && board[row][column] != PlayerCellState.ERROR
+                val currentCell = board[row][column]
+
+                if (shouldBeFilled) {
+                    currentCell == PlayerCellState.FILLED
+                } else {
+                    currentCell != PlayerCellState.FILLED && currentCell != PlayerCellState.ERROR
                 }
             }
         }
+    }
 
     private fun resolveNextCellState(
         position: CellPosition,
@@ -148,26 +154,19 @@ internal data class GameState(
     ): Int = if (previous != PlayerCellState.ERROR && next == PlayerCellState.ERROR) 1 else 0
 
     internal companion object {
-        fun create(level: GameLevel): GameState =
-            GameState(
+        fun create(level: GameLevel): GameState {
+            val size = level.size
+
+            return GameState(
                 level = level,
                 board =
-                    List(size = level.height) {
-                        List(size = level.width) { PlayerCellState.EMPTY }.toPersistentList()
+                    List(size = size) {
+                        List(size = size) { PlayerCellState.EMPTY }.toPersistentList()
                     }.toPersistentList(),
                 rowHints = level.solution.map(::lineHint).toPersistentList(),
-                columnHints =
-                    (0 until level.width)
-                        .map { column ->
-                            lineHint(
-                                buildString(capacity = level.height) {
-                                    repeat(level.height) { row ->
-                                        append(level.solution[row][column])
-                                    }
-                                },
-                            )
-                        }.toPersistentList(),
+                columnHints = (0 until size).map(level::columnLine).map(::lineHint).toPersistentList(),
             )
+        }
     }
 }
 
@@ -229,6 +228,13 @@ private fun lineHint(line: String): LineHint {
         isFullyFilled = line.all { it == '1' },
     )
 }
+
+private fun GameLevel.columnLine(column: Int): String =
+    buildString(capacity = size) {
+        repeat(size) { row ->
+            append(solution[row][column])
+        }
+    }
 
 private fun PersistentList<PersistentList<PlayerCellState>>.updated(
     position: CellPosition,

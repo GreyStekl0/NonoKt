@@ -8,6 +8,29 @@ import org.junit.Test
 
 class GameStateTest {
     @Test
+    fun `state create uses square size for board hints and solving`() {
+        val initialState = GameState.create(SquareLevel)
+
+        assertEquals(SquareLevel.size, initialState.board.size)
+        assertTrue(initialState.board.all { row -> row.size == SquareLevel.size })
+        assertEquals(SquareLevel.size, initialState.rowHints.size)
+        assertEquals(SquareLevel.size, initialState.columnHints.size)
+
+        val solvedState =
+            (0 until SquareLevel.size).fold(initialState) { state, row ->
+                (0 until SquareLevel.size).fold(state) { currentState, column ->
+                    if (SquareLevel.solution[row][column] == '1') {
+                        currentState.onCellPressed(row = row, column = column)
+                    } else {
+                        currentState
+                    }
+                }
+            }
+
+        assertTrue(solvedState.isSolved)
+    }
+
+    @Test
     fun `correct fill marks the cell without adding an error`() {
         val state = GameState.create(DiagonalLevel).onCellPressed(row = 0, column = 0)
 
@@ -108,6 +131,18 @@ class GameStateTest {
                         "100",
                         "000",
                         "000",
+                    ),
+            )
+
+        val SquareLevel =
+            GameLevel(
+                id = "square_4",
+                solution =
+                    listOf(
+                        "1001",
+                        "0110",
+                        "0110",
+                        "1001",
                     ),
             )
     }

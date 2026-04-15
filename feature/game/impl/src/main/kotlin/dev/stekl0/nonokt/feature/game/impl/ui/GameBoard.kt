@@ -46,11 +46,12 @@ internal fun NonogramBoard(
             modifier = Modifier.fillMaxSize().padding(BoardPadding),
             contentAlignment = Alignment.Center,
         ) {
-            val totalColumns = state.maxRowHintCount + state.level.width
-            val totalRows = state.maxColumnHintCount + state.level.height
+            val boardSize = state.level.size
+            val totalColumns = state.maxRowHintCount + boardSize
+            val totalRows = state.maxColumnHintCount + boardSize
             val cellSize = minOf(maxWidth / totalColumns, maxHeight / totalRows)
-            val boardWidth = cellSize * state.level.width
-            val boardHeight = cellSize * state.level.height
+            val boardWidth = cellSize * boardSize
+            val boardHeight = cellSize * boardSize
             val rowHintWidth = cellSize * state.maxRowHintCount
             val columnHintHeight = cellSize * state.maxColumnHintCount
 
@@ -65,16 +66,19 @@ internal fun NonogramBoard(
                     )
                     ColumnHints(
                         state = state,
+                        boardSize = boardSize,
                         cellSize = cellSize,
                     )
                 }
                 Row(modifier = Modifier.height(boardHeight)) {
                     RowHints(
                         state = state,
+                        boardSize = boardSize,
                         cellSize = cellSize,
                     )
                     BoardGrid(
                         state = state,
+                        boardSize = boardSize,
                         cellSize = cellSize,
                         onCellPress = onCellPress,
                     )
@@ -111,17 +115,18 @@ private fun HintCorner(
 @Composable
 private fun ColumnHints(
     state: GameState,
+    boardSize: Int,
     cellSize: Dp,
 ) {
     Row(
-        modifier = Modifier.width(cellSize * state.level.width),
+        modifier = Modifier.width(cellSize * boardSize),
         horizontalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         state.columnHints.forEachIndexed { columnIndex, hint ->
             ColumnHint(
                 hint = hint,
                 columnIndex = columnIndex,
-                columnCount = state.level.width,
+                columnCount = boardSize,
                 hintRowCount = state.maxColumnHintCount,
                 cellSize = cellSize,
             )
@@ -174,6 +179,7 @@ private fun ColumnHint(
 @Composable
 private fun RowHints(
     state: GameState,
+    boardSize: Int,
     cellSize: Dp,
 ) {
     Column(
@@ -184,7 +190,7 @@ private fun RowHints(
             RowHint(
                 hint = hint,
                 rowIndex = rowIndex,
-                rowCount = state.level.height,
+                rowCount = boardSize,
                 hintColumnCount = state.maxRowHintCount,
                 cellSize = cellSize,
             )
@@ -237,11 +243,12 @@ private fun RowHint(
 @Composable
 private fun BoardGrid(
     state: GameState,
+    boardSize: Int,
     cellSize: Dp,
     onCellPress: (Int, Int) -> Unit,
 ) {
     Column(
-        modifier = Modifier.width(cellSize * state.level.width),
+        modifier = Modifier.width(cellSize * boardSize),
         verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         state.board.forEachIndexed { rowIndex, row ->
@@ -265,14 +272,14 @@ private fun BoardGrid(
                                 right =
                                     trailingVerticalStroke(
                                         columnIndex = columnIndex,
-                                        columnCount = state.level.width,
+                                        columnCount = boardSize,
                                         thinGridStroke = ThinGridStroke,
                                         thickGridStroke = ThickGridStroke,
                                     ),
                                 bottom =
                                     trailingHorizontalStroke(
                                         rowIndex = rowIndex,
-                                        rowCount = state.level.height,
+                                        rowCount = boardSize,
                                         thinGridStroke = ThinGridStroke,
                                         thickGridStroke = ThickGridStroke,
                                     ),

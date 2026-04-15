@@ -36,9 +36,12 @@ internal fun gameErrorsText(state: GameState): String =
     )
 
 @Composable
-internal fun gameSizeText(state: GameState): String =
-    stringResource(
+internal fun gameSizeText(state: GameState): String {
+    val boardSize = state.level.size
+
+    return stringResource(
         R.string.game_size_value,
-        state.level.width,
-        state.level.height,
+        boardSize,
+        boardSize,
     )
+}

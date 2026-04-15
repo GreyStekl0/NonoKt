@@ -11,9 +11,6 @@ public data class GameLevel(
     val id: String,
     val solution: List<String>,
 ) {
-    public val width: Int
-        get() = solution.first().length
-
-    public val height: Int
+    public val size: Int
         get() = solution.size
 }

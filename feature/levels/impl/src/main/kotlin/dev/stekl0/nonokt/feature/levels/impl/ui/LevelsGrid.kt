@@ -103,16 +103,14 @@ private fun LevelThumbnail(
     foregroundColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
     Canvas(modifier = modifier) {
-        val rows = level.height
-        val columns = level.width
+        val boardSize = level.size
 
-        val cellSize = minOf(size.width / columns, size.height / rows)
-        val boardWidth = columns * cellSize
-        val boardHeight = rows * cellSize
+        val cellSize = minOf(size.width / boardSize, size.height / boardSize)
+        val boardDimension = boardSize * cellSize
         val boardOrigin =
             Offset(
-                x = (size.width - boardWidth) / 2f,
-                y = (size.height - boardHeight) / 2f,
+                x = (size.width - boardDimension) / 2f,
+                y = (size.height - boardDimension) / 2f,
             )
 
         level.solution.forEachIndexed { rowIndex, row ->
