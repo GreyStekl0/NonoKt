@@ -146,16 +146,6 @@ internal data class GameState(
             filledCellCount = filledCellCount + filledCellDelta(previousCellState, nextCellState),
         )
 
-    private fun filledCellDelta(
-        previous: PlayerCellState,
-        next: PlayerCellState,
-    ): Int =
-        when {
-            previous != PlayerCellState.FILLED && next == PlayerCellState.FILLED -> 1
-            previous == PlayerCellState.FILLED && next != PlayerCellState.FILLED -> -1
-            else -> 0
-        }
-
     internal companion object {
         fun create(level: GameLevel): GameState {
             val size = level.size
@@ -164,7 +154,6 @@ internal data class GameState(
                 (0 until size)
                     .map { column -> columnHint(level, column) }
                     .toPersistentList()
-            val requiredFilledCellCount = rowHints.sumOf { hint -> hint.values.sum() }
 
             return GameState(
                 level = level,
@@ -176,7 +165,7 @@ internal data class GameState(
                 columnHints = columnHints,
                 maxRowHintCount = rowHints.maxOf(LineHint::size),
                 maxColumnHintCount = columnHints.maxOf(LineHint::size),
-                requiredFilledCellCount = requiredFilledCellCount,
+                requiredFilledCellCount = rowHints.sumOf { hint -> hint.values.sum() },
             )
         }
     }
@@ -262,6 +251,16 @@ private inline fun buildLineHint(
         isFullyFilled = filledCellCount == length,
     )
 }
+
+private fun filledCellDelta(
+    previous: PlayerCellState,
+    next: PlayerCellState,
+): Int =
+    when {
+        previous != PlayerCellState.FILLED && next == PlayerCellState.FILLED -> 1
+        previous == PlayerCellState.FILLED && next != PlayerCellState.FILLED -> -1
+        else -> 0
+    }
 
 private fun PlayerCellState.isUndoLocked(): Boolean = this == PlayerCellState.ERROR
 
