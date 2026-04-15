@@ -17,8 +17,3 @@ public data class GameLevel(
     public val height: Int
         get() = solution.size
 }
-
-@Serializable
-public data class GameNavKey(
-    val level: GameLevel,
-) : NavKey

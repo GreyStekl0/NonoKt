@@ -1,0 +1,9 @@
+package dev.stekl0.nonokt.feature.game.api
+
+import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
+
+@Serializable
+public data class GameNavKey(
+    val level: GameLevel,
+) : NavKey
