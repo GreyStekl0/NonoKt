@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -24,7 +26,6 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.stekl0.nonokt.core.designsystem.icon.ArrowBack
 import dev.stekl0.nonokt.feature.game.api.GameLevel
 import dev.stekl0.nonokt.feature.game.impl.GameLimits.MAX_ERROR_COUNT
 import dev.stekl0.nonokt.feature.game.impl.ui.NonogramBoard
@@ -78,22 +80,13 @@ private fun GameContent(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = {
-                    Column {
-                        Text(text = state.level.id, style = MaterialTheme.typography.titleMedium)
-                        Text(
-                            text = gameSizeText(state),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                },
+                title = {},
                 navigationIcon = {
-                    TextButton(
-                        onClick = onBackClick,
-                        modifier = Modifier,
-                    ) {
-                        Text(text = stringResource(R.string.game_back))
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = ArrowBack,
+                            contentDescription = stringResource(R.string.game_back),
+                        )
                     }
                 },
             )
