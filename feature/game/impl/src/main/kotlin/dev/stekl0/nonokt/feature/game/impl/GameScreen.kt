@@ -35,6 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.stekl0.nonokt.core.designsystem.icon.ArrowBack
+import dev.stekl0.nonokt.core.designsystem.icon.Close
+import dev.stekl0.nonokt.core.designsystem.icon.Edit
 import dev.stekl0.nonokt.core.designsystem.icon.Redo
 import dev.stekl0.nonokt.core.designsystem.icon.Undo
 import dev.stekl0.nonokt.feature.game.api.GameLevel
@@ -233,46 +235,45 @@ private fun GameControlsPanel(
         tonalElevation = 3.dp,
         color = MaterialTheme.colorScheme.surfaceContainer,
     ) {
-        Column(
+        Row(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                HistoryButtonsRow(
-                    canUndo = state.canUndo,
-                    canRedo = state.canRedo,
-                    onUndoClick = onUndoClick,
-                    onRedoClick = onRedoClick,
-                )
+            HistoryButtonsRow(
+                canUndo = state.canUndo,
+                canRedo = state.canRedo,
+                onUndoClick = onUndoClick,
+                onRedoClick = onRedoClick,
+            )
 
-                SingleChoiceSegmentedButtonRow(
-                    modifier = Modifier.weight(1f),
-                ) {
-                    GameMode.entries.forEachIndexed { index, mode ->
-                        SegmentedButton(
-                            selected = state.mode == mode,
-                            onClick = { onModeChange(mode) },
-                            modifier = Modifier.weight(1f),
-                            shape =
-                                SegmentedButtonDefaults.itemShape(
-                                    index = index,
-                                    count = GameMode.entries.size,
-                                ),
+            SingleChoiceSegmentedButtonRow(
+                modifier = Modifier.weight(1f),
+            ) {
+                GameMode.entries.forEachIndexed { index, mode ->
+                    SegmentedButton(
+                        selected = state.mode == mode,
+                        onClick = { onModeChange(mode) },
+                        modifier = Modifier.weight(1f),
+                        shape =
+                            SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = GameMode.entries.size,
+                            ),
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
+                            Icon(
+                                imageVector = if (mode == GameMode.FILL) Edit else Close,
+                                contentDescription = null,
+                            )
                             Text(text = mode.label())
                         }
                     }
                 }
             }
-
-            Text(
-                text = state.statusText(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }

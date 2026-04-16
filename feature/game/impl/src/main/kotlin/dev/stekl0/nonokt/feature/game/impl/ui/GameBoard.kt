@@ -142,7 +142,11 @@ private fun ColumnHint(
     hintRowCount: Int,
     cellSize: Dp,
 ) {
-    val values = remember(hint, hintRowCount) { List(hintRowCount - hint.values.size) { null } + hint.values }
+    val values =
+        remember(
+            hint,
+            hintRowCount,
+        ) { List(hintRowCount - hint.values.size) { null } + hint.values }
 
     Column(
         modifier = Modifier.width(cellSize),
@@ -206,7 +210,11 @@ private fun RowHint(
     hintColumnCount: Int,
     cellSize: Dp,
 ) {
-    val values = remember(hint, hintColumnCount) { List(hintColumnCount - hint.values.size) { null } + hint.values }
+    val values =
+        remember(
+            hint,
+            hintColumnCount,
+        ) { List(hintColumnCount - hint.values.size) { null } + hint.values }
 
     Row(
         modifier = Modifier.height(cellSize),

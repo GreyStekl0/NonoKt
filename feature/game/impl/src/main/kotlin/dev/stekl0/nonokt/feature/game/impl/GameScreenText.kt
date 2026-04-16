@@ -11,15 +11,6 @@ internal fun GameMode.label(): String =
     }
 
 @Composable
-internal fun GameState.statusText(): String =
-    when {
-        isSolved -> stringResource(R.string.game_status_solved)
-        isFailed -> stringResource(R.string.game_status_failed)
-        mode == GameMode.FILL -> stringResource(R.string.game_status_fill_mode)
-        else -> stringResource(R.string.game_status_mark_mode)
-    }
-
-@Composable
 internal fun GameState.progressLabel(): String =
     when {
         isSolved -> stringResource(R.string.game_progress_solved)
