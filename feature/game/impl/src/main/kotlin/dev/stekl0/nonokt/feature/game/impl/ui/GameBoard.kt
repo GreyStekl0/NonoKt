@@ -24,8 +24,6 @@ import dev.stekl0.nonokt.feature.game.impl.GameState
 import dev.stekl0.nonokt.feature.game.impl.LineHint
 import dev.stekl0.nonokt.feature.game.impl.PlayerCellState
 
-private val ThinGridStroke: Dp = 0.75.dp
-private val ThickGridStroke: Dp = 1.75.dp
 private val BoardPadding: Dp = 16.dp
 
 @Composable
@@ -149,9 +147,14 @@ private fun ColumnHint(
     val hintRowCount = completion.values.size
     val values =
         remember(
-            hint,
+            hint.values,
             hintRowCount,
-        ) { List(hintRowCount - hint.values.size) { null } + hint.values }
+        ) {
+            paddedHintValues(
+                values = hint.values,
+                targetSize = hintRowCount,
+            )
+        }
 
     Column(
         modifier = Modifier.width(cellSize),
@@ -166,22 +169,11 @@ private fun ColumnHint(
                         colorScheme = colorScheme,
                     ),
                 strokes =
-                    CellStrokeWidths(
-                        top = if (hintRowIndex == 0) ThickGridStroke else ThinGridStroke,
-                        right =
-                            trailingVerticalStroke(
-                                columnIndex = columnIndex,
-                                columnCount = columnCount,
-                                thinGridStroke = ThinGridStroke,
-                                thickGridStroke = ThickGridStroke,
-                            ),
-                        bottom = if (hintRowIndex == hintRowCount - 1) ThickGridStroke else ThinGridStroke,
-                        left =
-                            leadingVerticalStroke(
-                                columnIndex = columnIndex,
-                                thinGridStroke = ThinGridStroke,
-                                thickGridStroke = ThickGridStroke,
-                            ),
+                    columnHintCellStrokes(
+                        hintRowIndex = hintRowIndex,
+                        hintRowCount = hintRowCount,
+                        columnIndex = columnIndex,
+                        columnCount = columnCount,
                     ),
             )
         }
@@ -222,9 +214,14 @@ private fun RowHint(
     val hintColumnCount = completion.values.size
     val values =
         remember(
-            hint,
+            hint.values,
             hintColumnCount,
-        ) { List(hintColumnCount - hint.values.size) { null } + hint.values }
+        ) {
+            paddedHintValues(
+                values = hint.values,
+                targetSize = hintColumnCount,
+            )
+        }
 
     Row(
         modifier = Modifier.height(cellSize),
@@ -239,22 +236,11 @@ private fun RowHint(
                         colorScheme = colorScheme,
                     ),
                 strokes =
-                    CellStrokeWidths(
-                        top =
-                            leadingHorizontalStroke(
-                                rowIndex = rowIndex,
-                                thinGridStroke = ThinGridStroke,
-                                thickGridStroke = ThickGridStroke,
-                            ),
-                        right = if (hintColumnIndex == hintColumnCount - 1) ThickGridStroke else ThinGridStroke,
-                        bottom =
-                            trailingHorizontalStroke(
-                                rowIndex = rowIndex,
-                                rowCount = rowCount,
-                                thinGridStroke = ThinGridStroke,
-                                thickGridStroke = ThickGridStroke,
-                            ),
-                        left = if (hintColumnIndex == 0) ThickGridStroke else ThinGridStroke,
+                    rowHintCellStrokes(
+                        rowIndex = rowIndex,
+                        rowCount = rowCount,
+                        hintColumnIndex = hintColumnIndex,
+                        hintColumnCount = hintColumnCount,
                     ),
             )
         }
@@ -281,33 +267,11 @@ private fun BoardGrid(
                         modifier = Modifier.size(cellSize),
                         enabled = state.isInteractionEnabled,
                         strokes =
-                            CellStrokeWidths(
-                                top =
-                                    leadingHorizontalStroke(
-                                        rowIndex = rowIndex,
-                                        thinGridStroke = ThinGridStroke,
-                                        thickGridStroke = ThickGridStroke,
-                                    ),
-                                right =
-                                    trailingVerticalStroke(
-                                        columnIndex = columnIndex,
-                                        columnCount = boardSize,
-                                        thinGridStroke = ThinGridStroke,
-                                        thickGridStroke = ThickGridStroke,
-                                    ),
-                                bottom =
-                                    trailingHorizontalStroke(
-                                        rowIndex = rowIndex,
-                                        rowCount = boardSize,
-                                        thinGridStroke = ThinGridStroke,
-                                        thickGridStroke = ThickGridStroke,
-                                    ),
-                                left =
-                                    leadingVerticalStroke(
-                                        columnIndex = columnIndex,
-                                        thinGridStroke = ThinGridStroke,
-                                        thickGridStroke = ThickGridStroke,
-                                    ),
+                            boardCellStrokes(
+                                rowIndex = rowIndex,
+                                rowCount = boardSize,
+                                columnIndex = columnIndex,
+                                columnCount = boardSize,
                             ),
                         onClick = { onCellPress(rowIndex, columnIndex) },
                     )

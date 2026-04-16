@@ -382,3 +382,16 @@ private fun GameScreenPreview() {
         onModeChange = {},
     )
 }
+
+@Preview(showBackground = true, heightDp = 900, widthDp = 300)
+@Composable
+private fun GameScreenCompactPreview() {
+    GameContent(
+        state = PreviewState,
+        onBackClick = {},
+        onCellPress = { _, _ -> },
+        onUndoClick = {},
+        onRedoClick = {},
+        onModeChange = {},
+    )
+}
