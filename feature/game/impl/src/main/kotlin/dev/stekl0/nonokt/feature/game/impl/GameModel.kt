@@ -58,11 +58,15 @@ internal data class GameState(
         return if (nextCellState == previousCellState) {
             this
         } else {
-            val stateAfterBoardChange =
-                applyBoardChange(
+            val primaryChange =
+                CellStateChange(
                     position = position,
                     previousCellState = previousCellState,
                     nextCellState = nextCellState,
+                )
+            val stateAfterBoardChange =
+                applyChanges(
+                    changes = listOf(primaryChange),
                 )
 
             if (nextCellState.isUndoLocked()) {
@@ -71,8 +75,25 @@ internal data class GameState(
                     futureMoves = persistentListOf(),
                 )
             } else {
-                val move = GameMove(position, previousCellState, nextCellState)
-                stateAfterBoardChange.copy(
+                val autoMarkChanges =
+                    if (nextCellState == PlayerCellState.FILLED) {
+                        stateAfterBoardChange.autoMarkChangesForCompletedLines(position)
+                    } else {
+                        persistentListOf()
+                    }
+
+                val stateAfterAutoMark =
+                    stateAfterBoardChange.applyChanges(
+                        changes = autoMarkChanges,
+                    )
+                val move =
+                    GameMove(
+                        changes =
+                            persistentListOf(primaryChange)
+                                .addAll(autoMarkChanges),
+                    )
+
+                stateAfterAutoMark.copy(
                     pastMoves = pastMoves.add(move),
                     futureMoves = persistentListOf(),
                 )
@@ -84,10 +105,16 @@ internal data class GameState(
         if (!canUndo) return this
 
         val move = pastMoves.last()
-        return applyBoardChange(
-            position = move.position,
-            previousCellState = move.nextCellState,
-            nextCellState = move.previousCellState,
+        return applyChanges(
+            changes =
+                move.changes
+                    .asReversed()
+                    .map { change ->
+                        change.copy(
+                            previousCellState = change.nextCellState,
+                            nextCellState = change.previousCellState,
+                        )
+                    },
         ).copy(
             pastMoves = pastMoves.removeAt(pastMoves.lastIndex),
             futureMoves = futureMoves.add(move),
@@ -98,10 +125,8 @@ internal data class GameState(
         if (!canRedo) return this
 
         val move = futureMoves.last()
-        return applyBoardChange(
-            position = move.position,
-            previousCellState = move.previousCellState,
-            nextCellState = move.nextCellState,
+        return applyChanges(
+            changes = move.changes,
         ).copy(
             pastMoves = pastMoves.add(move),
             futureMoves = futureMoves.removeAt(futureMoves.lastIndex),
@@ -145,6 +170,15 @@ internal data class GameState(
             board = board.updated(position = position, value = nextCellState),
             filledCellCount = filledCellCount + filledCellDelta(previousCellState, nextCellState),
         )
+
+    private fun applyChanges(changes: List<CellStateChange>): GameState =
+        changes.fold(this) { state, change ->
+            state.applyBoardChange(
+                position = change.position,
+                previousCellState = change.previousCellState,
+                nextCellState = change.nextCellState,
+            )
+        }
 
     internal companion object {
         fun create(level: GameLevel): GameState {
@@ -195,6 +229,11 @@ internal enum class PlayerCellState {
 
 @Immutable
 internal data class GameMove(
+    val changes: ImmutableList<CellStateChange>,
+)
+
+@Immutable
+internal data class CellStateChange(
     val position: CellPosition,
     val previousCellState: PlayerCellState,
     val nextCellState: PlayerCellState,
