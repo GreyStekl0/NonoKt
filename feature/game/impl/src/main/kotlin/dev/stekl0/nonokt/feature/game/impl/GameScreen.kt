@@ -45,7 +45,7 @@ private val ScreenVerticalPadding = 12.dp
 private val SectionSpacing = 16.dp
 
 @Composable
-internal fun GameRoute(
+internal fun GameScreen(
     level: GameLevel,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -53,7 +53,7 @@ internal fun GameRoute(
 ) {
     val state by viewModel.store.subscribe()
 
-    GameScreen(
+    GameContent(
         state = state,
         onBackClick = onBackClick,
         onCellPress = viewModel::onCellPressed,
@@ -65,7 +65,7 @@ internal fun GameRoute(
 }
 
 @Composable
-private fun GameScreen(
+private fun GameContent(
     state: GameState,
     onBackClick: () -> Unit,
     onCellPress: (Int, Int) -> Unit,
@@ -105,7 +105,10 @@ private fun GameScreen(
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(horizontal = ScreenHorizontalPadding, vertical = ScreenVerticalPadding),
+                    .padding(
+                        horizontal = ScreenHorizontalPadding,
+                        vertical = ScreenVerticalPadding,
+                    ),
             verticalArrangement = Arrangement.spacedBy(SectionSpacing),
         ) {
             NonogramBoard(
@@ -265,7 +268,11 @@ private fun GameControlsPanel(
                         selected = state.mode == mode,
                         onClick = { onModeChange(mode) },
                         modifier = Modifier.weight(1f),
-                        shape = SegmentedButtonDefaults.itemShape(index = index, count = GameMode.entries.size),
+                        shape =
+                            SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = GameMode.entries.size,
+                            ),
                     ) {
                         Text(text = mode.label())
                     }
@@ -307,7 +314,7 @@ private val PreviewState =
 @Preview(showBackground = true, heightDp = 900, widthDp = 420)
 @Composable
 private fun GameScreenPreview() {
-    GameScreen(
+    GameContent(
         state = PreviewState,
         onBackClick = {},
         onCellPress = { _, _ -> },
