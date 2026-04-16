@@ -111,10 +111,7 @@ private fun GameContent(
             NonogramBoard(
                 state = state,
                 onCellPress = onCellPress,
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
             )
 
             GameSummaryPanel(

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,7 +27,7 @@ import dev.stekl0.nonokt.feature.game.impl.PlayerCellState
 
 private val ThinGridStroke: Dp = 0.75.dp
 private val ThickGridStroke: Dp = 1.75.dp
-private val BoardPadding: Dp = 12.dp
+private val BoardPadding: Dp = 16.dp
 
 @Composable
 internal fun NonogramBoard(
@@ -43,7 +42,7 @@ internal fun NonogramBoard(
         color = MaterialTheme.colorScheme.surfaceContainerLow,
     ) {
         BoxWithConstraints(
-            modifier = Modifier.fillMaxSize().padding(BoardPadding),
+            modifier = Modifier.padding(BoardPadding),
             contentAlignment = Alignment.Center,
         ) {
             val boardSize = state.level.size
