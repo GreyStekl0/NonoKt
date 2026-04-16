@@ -1,7 +1,6 @@
 package dev.stekl0.nonokt.feature.game.impl.ui
 
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -16,9 +15,10 @@ private object BoardDecorationMetrics {
     const val MARKER_STROKE_FACTOR: Float = 0.08f
 }
 
-@Composable
-internal fun hintTextColor(hint: LineHint): Color =
-    if (hint.isFullyFilled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+internal fun hintTextColor(
+    hint: LineHint,
+    colorScheme: ColorScheme,
+): Color = if (hint.isFullyFilled) colorScheme.primary else colorScheme.onSurface
 
 internal fun leadingHorizontalStroke(
     rowIndex: Int,

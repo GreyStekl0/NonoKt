@@ -141,6 +141,7 @@ private fun ColumnHint(
     hintRowCount: Int,
     cellSize: Dp,
 ) {
+    val colorScheme = MaterialTheme.colorScheme
     val values =
         remember(
             hint,
@@ -155,7 +156,7 @@ private fun ColumnHint(
             HintCell(
                 value = value,
                 modifier = Modifier.size(width = cellSize, height = cellSize),
-                textColor = hintTextColor(hint),
+                textColor = hintTextColor(hint = hint, colorScheme = colorScheme),
                 strokes =
                     CellStrokeWidths(
                         top = if (hintRowIndex == 0) ThickGridStroke else ThinGridStroke,
@@ -209,6 +210,7 @@ private fun RowHint(
     hintColumnCount: Int,
     cellSize: Dp,
 ) {
+    val colorScheme = MaterialTheme.colorScheme
     val values =
         remember(
             hint,
@@ -223,7 +225,7 @@ private fun RowHint(
             HintCell(
                 value = value,
                 modifier = Modifier.size(width = cellSize, height = cellSize),
-                textColor = hintTextColor(hint),
+                textColor = hintTextColor(hint = hint, colorScheme = colorScheme),
                 strokes =
                     CellStrokeWidths(
                         top =
