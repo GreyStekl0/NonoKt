@@ -1,33 +1,62 @@
 package dev.stekl0.nonokt.feature.game.impl.ui
 
+import dev.stekl0.nonokt.feature.game.impl.GameState
 import dev.stekl0.nonokt.feature.game.impl.LineHint
 import dev.stekl0.nonokt.feature.game.impl.PlayerCellState
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
+
+internal data class HintCompletionLine(
+    val values: ImmutableList<Boolean>,
+)
 
 internal data class HintCompletion(
-    val rows: List<List<Boolean>>,
-    val columns: List<List<Boolean>>,
+    val rows: ImmutableList<HintCompletionLine>,
+    val columns: ImmutableList<HintCompletionLine>,
 )
 
 internal fun calculateHintCompletion(
     board: List<List<PlayerCellState>>,
     rowHints: List<LineHint>,
     columnHints: List<LineHint>,
+    rowHintCount: Int,
+    columnHintCount: Int,
 ): HintCompletion {
     val rows =
-        rowHints.mapIndexed { rowIndex, hint ->
-            clueCompletion(
-                hintValues = hint.values,
-                runs = filledRunsInRow(board[rowIndex]),
-            )
-        }
+        rowHints
+            .mapIndexed { rowIndex, hint ->
+                HintCompletionLine(
+                    values =
+                        alignClueCompletion(
+                            completion =
+                                clueCompletion(
+                                    hintValues = hint.values,
+                                    runs = filledRunsInRow(board[rowIndex]),
+                                ),
+                            targetSize = rowHintCount,
+                        ),
+                )
+            }.toPersistentList()
 
     val columns =
-        columnHints.mapIndexed { columnIndex, hint ->
-            clueCompletion(
-                hintValues = hint.values,
-                runs = filledRunsInColumn(board = board, columnIndex = columnIndex),
-            )
-        }
+        columnHints
+            .mapIndexed { columnIndex, hint ->
+                HintCompletionLine(
+                    values =
+                        alignClueCompletion(
+                            completion =
+                                clueCompletion(
+                                    hintValues = hint.values,
+                                    runs =
+                                        filledRunsInColumn(
+                                            board = board,
+                                            columnIndex = columnIndex,
+                                        ),
+                                ),
+                            targetSize = columnHintCount,
+                        ),
+                )
+            }.toPersistentList()
 
     return HintCompletion(rows = rows, columns = columns)
 }
@@ -64,16 +93,31 @@ private inline fun filledRuns(
 private fun clueCompletion(
     hintValues: List<Int>,
     runs: List<Int>,
-): List<Boolean> {
+): ImmutableList<Boolean> {
     var prefixMatched = true
 
-    return hintValues.mapIndexed { index, value ->
-        if (!prefixMatched) {
-            false
-        } else {
-            val matched = runs.getOrNull(index) == value
-            prefixMatched = matched
-            matched
-        }
-    }
+    return hintValues
+        .mapIndexed { index, value ->
+            if (!prefixMatched) {
+                false
+            } else {
+                val matched = runs.getOrNull(index) == value
+                prefixMatched = matched
+                matched
+            }
+        }.toPersistentList()
 }
+
+private fun alignClueCompletion(
+    completion: ImmutableList<Boolean>,
+    targetSize: Int,
+): ImmutableList<Boolean> = (List(targetSize - completion.size) { false } + completion).toPersistentList()
+
+internal fun GameState.buildHintCompletion(): HintCompletion =
+    calculateHintCompletion(
+        board = board,
+        rowHints = rowHints,
+        columnHints = columnHints,
+        rowHintCount = maxRowHintCount,
+        columnHintCount = maxColumnHintCount,
+    )
