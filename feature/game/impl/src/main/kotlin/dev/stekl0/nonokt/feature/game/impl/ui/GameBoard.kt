@@ -45,6 +45,7 @@ internal fun NonogramBoard(
             contentAlignment = Alignment.Center,
         ) {
             val boardSize = state.level.size
+            val hintCompletion = rememberHintCompletion(state)
             val totalColumns = state.maxRowHintCount + boardSize
             val totalRows = state.maxColumnHintCount + boardSize
             val cellSize = minOf(maxWidth / totalColumns, maxHeight / totalRows)
@@ -63,6 +64,7 @@ internal fun NonogramBoard(
                     )
                     ColumnHints(
                         state = state,
+                        completed = hintCompletion.columns,
                         boardSize = boardSize,
                         cellSize = cellSize,
                     )
@@ -70,6 +72,7 @@ internal fun NonogramBoard(
                 Row(modifier = Modifier.height(boardHeight)) {
                     RowHints(
                         state = state,
+                        completed = hintCompletion.rows,
                         boardSize = boardSize,
                         cellSize = cellSize,
                     )
@@ -84,6 +87,16 @@ internal fun NonogramBoard(
         }
     }
 }
+
+@Composable
+private fun rememberHintCompletion(state: GameState): HintCompletion =
+    remember(state.board, state.rowHints, state.columnHints) {
+        calculateHintCompletion(
+            board = state.board,
+            rowHints = state.rowHints,
+            columnHints = state.columnHints,
+        )
+    }
 
 @Composable
 private fun HintCorner(
@@ -112,6 +125,7 @@ private fun HintCorner(
 @Composable
 private fun ColumnHints(
     state: GameState,
+    completed: List<List<Boolean>>,
     boardSize: Int,
     cellSize: Dp,
 ) {
@@ -121,6 +135,7 @@ private fun ColumnHints(
         state.columnHints.forEachIndexed { columnIndex, hint ->
             ColumnHint(
                 hint = hint,
+                completed = completed[columnIndex],
                 columnIndex = columnIndex,
                 columnCount = boardSize,
                 hintRowCount = state.maxColumnHintCount,
@@ -133,6 +148,7 @@ private fun ColumnHints(
 @Composable
 private fun ColumnHint(
     hint: LineHint,
+    completed: List<Boolean>,
     columnIndex: Int,
     columnCount: Int,
     hintRowCount: Int,
@@ -144,6 +160,10 @@ private fun ColumnHint(
             hint,
             hintRowCount,
         ) { List(hintRowCount - hint.values.size) { null } + hint.values }
+    val completedValues =
+        remember(completed, hintRowCount) {
+            List(hintRowCount - completed.size) { false } + completed
+        }
 
     Column(
         modifier = Modifier.width(cellSize),
@@ -152,7 +172,11 @@ private fun ColumnHint(
             HintCell(
                 value = value,
                 modifier = Modifier.size(cellSize),
-                textColor = hintTextColor(hint = hint, colorScheme = colorScheme),
+                textColor =
+                    hintTextColor(
+                        isCompleted = completedValues[hintRowIndex],
+                        colorScheme = colorScheme,
+                    ),
                 strokes =
                     CellStrokeWidths(
                         top = if (hintRowIndex == 0) ThickGridStroke else ThinGridStroke,
@@ -179,6 +203,7 @@ private fun ColumnHint(
 @Composable
 private fun RowHints(
     state: GameState,
+    completed: List<List<Boolean>>,
     boardSize: Int,
     cellSize: Dp,
 ) {
@@ -188,6 +213,7 @@ private fun RowHints(
         state.rowHints.forEachIndexed { rowIndex, hint ->
             RowHint(
                 hint = hint,
+                completed = completed[rowIndex],
                 rowIndex = rowIndex,
                 rowCount = boardSize,
                 hintColumnCount = state.maxRowHintCount,
@@ -200,6 +226,7 @@ private fun RowHints(
 @Composable
 private fun RowHint(
     hint: LineHint,
+    completed: List<Boolean>,
     rowIndex: Int,
     rowCount: Int,
     hintColumnCount: Int,
@@ -211,6 +238,10 @@ private fun RowHint(
             hint,
             hintColumnCount,
         ) { List(hintColumnCount - hint.values.size) { null } + hint.values }
+    val completedValues =
+        remember(completed, hintColumnCount) {
+            List(hintColumnCount - completed.size) { false } + completed
+        }
 
     Row(
         modifier = Modifier.height(cellSize),
@@ -219,7 +250,11 @@ private fun RowHint(
             HintCell(
                 value = value,
                 modifier = Modifier.size(cellSize),
-                textColor = hintTextColor(hint = hint, colorScheme = colorScheme),
+                textColor =
+                    hintTextColor(
+                        isCompleted = completedValues[hintColumnIndex],
+                        colorScheme = colorScheme,
+                    ),
                 strokes =
                     CellStrokeWidths(
                         top =

@@ -176,7 +176,6 @@ internal typealias GameIntent = LambdaIntent<GameState, Nothing>
 @Immutable
 internal data class LineHint(
     val values: ImmutableList<Int>,
-    val isFullyFilled: Boolean,
 ) {
     val size: Int
         get() = values.size
@@ -226,8 +225,6 @@ private inline fun buildLineHint(
     length: Int,
     cellAt: (Int) -> Char,
 ): LineHint {
-    var filledCellCount = 0
-
     val values =
         buildList {
             var runLength = 0
@@ -236,7 +233,6 @@ private inline fun buildLineHint(
                 val cell = cellAt(index)
                 if (cell == '1') {
                     runLength += 1
-                    filledCellCount += 1
                 } else if (runLength > 0) {
                     add(runLength)
                     runLength = 0
@@ -248,7 +244,6 @@ private inline fun buildLineHint(
 
     return LineHint(
         values = values.ifEmpty { listOf(0) }.toPersistentList(),
-        isFullyFilled = filledCellCount == length,
     )
 }
 

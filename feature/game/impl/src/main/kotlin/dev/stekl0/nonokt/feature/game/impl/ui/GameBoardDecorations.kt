@@ -7,7 +7,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
-import dev.stekl0.nonokt.feature.game.impl.LineHint
 
 private object BoardDecorationMetrics {
     const val HINT_GROUP_SIZE: Int = 5
@@ -16,9 +15,9 @@ private object BoardDecorationMetrics {
 }
 
 internal fun hintTextColor(
-    hint: LineHint,
+    isCompleted: Boolean,
     colorScheme: ColorScheme,
-): Color = if (hint.isFullyFilled) colorScheme.primary else colorScheme.onSurface
+): Color = if (isCompleted) colorScheme.onSurfaceVariant else colorScheme.onSurface
 
 internal fun leadingHorizontalStroke(
     rowIndex: Int,
