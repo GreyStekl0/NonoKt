@@ -5,6 +5,7 @@ package dev.stekl0.nonokt.feature.game.impl
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -49,6 +50,7 @@ import pro.respawn.flowmvi.compose.dsl.subscribe
 private val ScreenHorizontalPadding = 16.dp
 private val ScreenVerticalPadding = 12.dp
 private val SectionSpacing = 16.dp
+private val CompactControlsBreakpoint = 320.dp
 
 @Composable
 internal fun GameScreen(
@@ -232,46 +234,84 @@ private fun GameControlsPanel(
         tonalElevation = 3.dp,
         color = MaterialTheme.colorScheme.surfaceContainer,
     ) {
-        Row(
+        BoxWithConstraints(
             modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
         ) {
-            HistoryButtonsRow(
-                canUndo = state.canUndo,
-                canRedo = state.canRedo,
-                onUndoClick = onUndoClick,
-                onRedoClick = onRedoClick,
-            )
-
-            SingleChoiceSegmentedButtonRow(
-                modifier = Modifier.weight(1f),
-            ) {
-                GameMode.entries.forEachIndexed { index, mode ->
-                    SegmentedButton(
-                        selected = state.mode == mode,
-                        onClick = { onModeChange(mode) },
+            if (maxWidth < CompactControlsBreakpoint) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    HistoryButtonsRow(
+                        canUndo = state.canUndo,
+                        canRedo = state.canRedo,
+                        onUndoClick = onUndoClick,
+                        onRedoClick = onRedoClick,
+                    )
+                    ModeSelector(
+                        selectedMode = state.mode,
+                        onModeChange = onModeChange,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    HistoryButtonsRow(
+                        canUndo = state.canUndo,
+                        canRedo = state.canRedo,
+                        onUndoClick = onUndoClick,
+                        onRedoClick = onRedoClick,
+                    )
+                    ModeSelector(
+                        selectedMode = state.mode,
+                        onModeChange = onModeChange,
                         modifier = Modifier.weight(1f),
-                        shape =
-                            SegmentedButtonDefaults.itemShape(
-                                index = index,
-                                count = GameMode.entries.size,
-                            ),
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                imageVector = if (mode == GameMode.FILL) Edit else Close,
-                                contentDescription = null,
-                            )
-                            Text(text = mode.label())
-                        }
-                    }
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ModeSelector(
+    selectedMode: GameMode,
+    onModeChange: (GameMode) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    SingleChoiceSegmentedButtonRow(
+        modifier = modifier,
+    ) {
+        GameMode.entries.forEachIndexed { index, mode ->
+            SegmentedButton(
+                selected = selectedMode == mode,
+                onClick = { onModeChange(mode) },
+                modifier = Modifier.weight(1f),
+                shape =
+                    SegmentedButtonDefaults.itemShape(
+                        index = index,
+                        count = GameMode.entries.size,
+                    ),
+            ) {
+                ModeSegmentContent(mode = mode)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ModeSegmentContent(mode: GameMode) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = if (mode == GameMode.FILL) Edit else Close,
+            contentDescription = null,
+        )
+        Text(text = mode.label())
     }
 }
 

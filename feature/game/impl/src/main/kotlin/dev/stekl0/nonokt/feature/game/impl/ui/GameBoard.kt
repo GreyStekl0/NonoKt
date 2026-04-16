@@ -1,7 +1,6 @@
 package dev.stekl0.nonokt.feature.game.impl.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -56,7 +55,6 @@ internal fun NonogramBoard(
 
             Column(
                 modifier = Modifier.width(rowHintWidth + boardWidth),
-                verticalArrangement = Arrangement.spacedBy(0.dp),
             ) {
                 Row(modifier = Modifier.height(columnHintHeight)) {
                     HintCorner(
@@ -119,7 +117,6 @@ private fun ColumnHints(
 ) {
     Row(
         modifier = Modifier.width(cellSize * boardSize),
-        horizontalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         state.columnHints.forEachIndexed { columnIndex, hint ->
             ColumnHint(
@@ -150,12 +147,11 @@ private fun ColumnHint(
 
     Column(
         modifier = Modifier.width(cellSize),
-        verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         values.forEachIndexed { hintRowIndex, value ->
             HintCell(
                 value = value,
-                modifier = Modifier.size(width = cellSize, height = cellSize),
+                modifier = Modifier.size(cellSize),
                 textColor = hintTextColor(hint = hint, colorScheme = colorScheme),
                 strokes =
                     CellStrokeWidths(
@@ -188,7 +184,6 @@ private fun RowHints(
 ) {
     Column(
         modifier = Modifier.width(cellSize * state.maxRowHintCount),
-        verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         state.rowHints.forEachIndexed { rowIndex, hint ->
             RowHint(
@@ -219,12 +214,11 @@ private fun RowHint(
 
     Row(
         modifier = Modifier.height(cellSize),
-        horizontalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         values.forEachIndexed { hintColumnIndex, value ->
             HintCell(
                 value = value,
-                modifier = Modifier.size(width = cellSize, height = cellSize),
+                modifier = Modifier.size(cellSize),
                 textColor = hintTextColor(hint = hint, colorScheme = colorScheme),
                 strokes =
                     CellStrokeWidths(
@@ -258,17 +252,15 @@ private fun BoardGrid(
 ) {
     Column(
         modifier = Modifier.width(cellSize * boardSize),
-        verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
         state.board.forEachIndexed { rowIndex, row ->
             Row(
                 modifier = Modifier.height(cellSize),
-                horizontalArrangement = Arrangement.spacedBy(0.dp),
             ) {
                 row.forEachIndexed { columnIndex, cellState ->
                     BoardCell(
                         cellState = cellState,
-                        modifier = Modifier.size(width = cellSize, height = cellSize),
+                        modifier = Modifier.size(cellSize),
                         enabled = state.isInteractionEnabled,
                         strokes =
                             CellStrokeWidths(
