@@ -35,6 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.stekl0.nonokt.core.designsystem.icon.ArrowBack
+import dev.stekl0.nonokt.core.designsystem.icon.Redo
+import dev.stekl0.nonokt.core.designsystem.icon.Undo
 import dev.stekl0.nonokt.feature.game.api.GameLevel
 import dev.stekl0.nonokt.feature.game.impl.GameLimits.MAX_ERROR_COUNT
 import dev.stekl0.nonokt.feature.game.impl.ui.NonogramBoard
@@ -107,7 +109,10 @@ private fun GameContent(
             NonogramBoard(
                 state = state,
                 onCellPress = onCellPress,
-                modifier = Modifier.weight(1f).fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
             )
 
             GameSummaryPanel(
@@ -232,26 +237,12 @@ private fun GameControlsPanel(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                OutlinedButton(
-                    onClick = onUndoClick,
-                    enabled = state.canUndo,
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(text = stringResource(R.string.game_undo))
-                }
-
-                OutlinedButton(
-                    onClick = onRedoClick,
-                    enabled = state.canRedo,
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(text = stringResource(R.string.game_redo))
-                }
-            }
+            HistoryButtonsRow(
+                canUndo = state.canUndo,
+                canRedo = state.canRedo,
+                onUndoClick = onUndoClick,
+                onRedoClick = onRedoClick,
+            )
 
             SingleChoiceSegmentedButtonRow(
                 modifier = Modifier.fillMaxWidth(),
@@ -276,6 +267,41 @@ private fun GameControlsPanel(
                 text = state.statusText(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun HistoryButtonsRow(
+    canUndo: Boolean,
+    canRedo: Boolean,
+    onUndoClick: () -> Unit,
+    onRedoClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        OutlinedButton(
+            onClick = onUndoClick,
+            enabled = canUndo,
+            modifier = Modifier.weight(1f),
+        ) {
+            Icon(
+                imageVector = Undo,
+                contentDescription = stringResource(R.string.game_undo),
+            )
+        }
+
+        OutlinedButton(
+            onClick = onRedoClick,
+            enabled = canRedo,
+            modifier = Modifier.weight(1f),
+        ) {
+            Icon(
+                imageVector = Redo,
+                contentDescription = stringResource(R.string.game_redo),
             )
         }
     }
