@@ -19,7 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -235,30 +235,35 @@ private fun GameControlsPanel(
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            HistoryButtonsRow(
-                canUndo = state.canUndo,
-                canRedo = state.canRedo,
-                onUndoClick = onUndoClick,
-                onRedoClick = onRedoClick,
-            )
-
-            SingleChoiceSegmentedButtonRow(
-                modifier = Modifier.fillMaxWidth(),
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                GameMode.entries.forEachIndexed { index, mode ->
-                    SegmentedButton(
-                        selected = state.mode == mode,
-                        onClick = { onModeChange(mode) },
-                        modifier = Modifier.weight(1f),
-                        shape =
-                            SegmentedButtonDefaults.itemShape(
-                                index = index,
-                                count = GameMode.entries.size,
-                            ),
-                    ) {
-                        Text(text = mode.label())
+                HistoryButtonsRow(
+                    canUndo = state.canUndo,
+                    canRedo = state.canRedo,
+                    onUndoClick = onUndoClick,
+                    onRedoClick = onRedoClick,
+                )
+
+                SingleChoiceSegmentedButtonRow(
+                    modifier = Modifier.weight(1f),
+                ) {
+                    GameMode.entries.forEachIndexed { index, mode ->
+                        SegmentedButton(
+                            selected = state.mode == mode,
+                            onClick = { onModeChange(mode) },
+                            modifier = Modifier.weight(1f),
+                            shape =
+                                SegmentedButtonDefaults.itemShape(
+                                    index = index,
+                                    count = GameMode.entries.size,
+                                ),
+                        ) {
+                            Text(text = mode.label())
+                        }
                     }
                 }
             }
@@ -280,13 +285,11 @@ private fun HistoryButtonsRow(
     onRedoClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        OutlinedButton(
+        OutlinedIconButton(
             onClick = onUndoClick,
             enabled = canUndo,
-            modifier = Modifier.weight(1f),
         ) {
             Icon(
                 imageVector = Undo,
@@ -294,10 +297,9 @@ private fun HistoryButtonsRow(
             )
         }
 
-        OutlinedButton(
+        OutlinedIconButton(
             onClick = onRedoClick,
             enabled = canRedo,
-            modifier = Modifier.weight(1f),
         ) {
             Icon(
                 imageVector = Redo,
