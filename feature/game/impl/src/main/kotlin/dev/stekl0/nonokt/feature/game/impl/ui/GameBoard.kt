@@ -363,7 +363,7 @@ private fun BoardCell(
 
     val markerColor =
         when (cellState) {
-            PlayerCellState.MARKED -> colorScheme.onSurfaceVariant
+            PlayerCellState.MARKED -> colorScheme.onSurface
             PlayerCellState.ERROR -> colorScheme.error
             else -> Color.Unspecified
         }
