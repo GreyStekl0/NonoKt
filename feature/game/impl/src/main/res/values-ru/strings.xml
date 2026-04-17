@@ -11,4 +11,7 @@
     <string name="game_progress_in_progress">В процессе</string>
     <string name="game_progress_solved">Решено</string>
     <string name="game_progress_failed">Проиграно</string>
+    <string name="game_completion_title">Уровень пройден</string>
+    <string name="game_completion_levels">К списку уровней</string>
+    <string name="game_completion_next">Следующий уровень</string>
 </resources>

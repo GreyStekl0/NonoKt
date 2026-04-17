@@ -41,6 +41,7 @@ import dev.stekl0.nonokt.core.designsystem.icon.Redo
 import dev.stekl0.nonokt.core.designsystem.icon.Undo
 import dev.stekl0.nonokt.feature.game.api.GameLevel
 import dev.stekl0.nonokt.feature.game.impl.GameLimits.MAX_ERROR_COUNT
+import dev.stekl0.nonokt.feature.game.impl.ui.GameSolvedDialog
 import dev.stekl0.nonokt.feature.game.impl.ui.NonogramBoard
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -54,6 +55,8 @@ private val SectionSpacing = 16.dp
 internal fun GameScreen(
     level: GameLevel,
     onBackClick: () -> Unit,
+    onLevelsClick: () -> Unit,
+    onNextLevelClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
     viewModel: GameViewModel = koinViewModel(parameters = { parametersOf(level) }),
 ) {
@@ -62,6 +65,8 @@ internal fun GameScreen(
     GameContent(
         state = state,
         onBackClick = onBackClick,
+        onLevelsClick = onLevelsClick,
+        onNextLevelClick = onNextLevelClick,
         onCellPress = viewModel::onCellPressed,
         onUndoClick = viewModel::undo,
         onRedoClick = viewModel::redo,
@@ -74,6 +79,8 @@ internal fun GameScreen(
 private fun GameContent(
     state: GameState,
     onBackClick: () -> Unit,
+    onLevelsClick: () -> Unit,
+    onNextLevelClick: (() -> Unit)?,
     onCellPress: (Int, Int) -> Unit,
     onUndoClick: () -> Unit,
     onRedoClick: () -> Unit,
@@ -125,6 +132,15 @@ private fun GameContent(
                 onRedoClick = onRedoClick,
                 onModeChange = onModeChange,
                 modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
+        if (state.isSolved) {
+            GameSolvedDialog(
+                level = state.level,
+                hasNextLevel = onNextLevelClick != null,
+                onLevelsClick = onLevelsClick,
+                onNextLevelClick = onNextLevelClick,
             )
         }
     }
@@ -352,6 +368,8 @@ private fun GameScreenPreview() {
     GameContent(
         state = PreviewState,
         onBackClick = {},
+        onLevelsClick = {},
+        onNextLevelClick = null,
         onCellPress = { _, _ -> },
         onUndoClick = {},
         onRedoClick = {},
@@ -365,6 +383,8 @@ private fun GameScreenCompactPreview() {
     GameContent(
         state = PreviewState,
         onBackClick = {},
+        onLevelsClick = {},
+        onNextLevelClick = null,
         onCellPress = { _, _ -> },
         onUndoClick = {},
         onRedoClick = {},

@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -38,7 +38,7 @@ private object LevelsGridLayout {
 @Composable
 internal fun LevelsGrid(
     levels: ImmutableList<GameLevel>,
-    onLevelClick: (GameLevel) -> Unit,
+    onLevelClick: (GameLevel, List<GameLevel>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
@@ -48,17 +48,29 @@ internal fun LevelsGrid(
         horizontalArrangement = Arrangement.spacedBy(LevelGridSpacing),
         verticalArrangement = Arrangement.spacedBy(LevelGridSpacing),
     ) {
-        items(
+        itemsIndexed(
             items = levels,
-            key = GameLevel::id,
-        ) { level ->
+            key = { _, level -> level.id },
+        ) { index, level ->
             LevelTile(
                 level = level,
-                onClick = { onLevelClick(level) },
+                onClick = {
+                    onLevelClick(
+                        level,
+                        levels.remainingLevelsAfter(index),
+                    )
+                },
             )
         }
     }
 }
+
+private fun ImmutableList<GameLevel>.remainingLevelsAfter(index: Int): List<GameLevel> =
+    if (index == lastIndex) {
+        emptyList()
+    } else {
+        subList(index + 1, size)
+    }
 
 @Composable
 private fun LevelTile(

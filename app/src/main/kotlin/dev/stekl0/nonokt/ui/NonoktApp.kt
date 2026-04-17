@@ -22,8 +22,29 @@ public fun NonoktApp(modifier: Modifier = Modifier) {
     val entryProvider =
         remember(navigator) {
             entryProvider {
-                levelsEntry(onLevelClick = { level -> navigator.navigate(GameNavKey(level)) })
-                gameEntry(onBackClick = navigator::goBack)
+                levelsEntry(
+                    onLevelClick = { level, remainingLevels ->
+                        navigator.navigate(
+                            GameNavKey(
+                                level = level,
+                                remainingLevels = remainingLevels,
+                            ),
+                        )
+                    },
+                )
+                gameEntry(
+                    onBackClick = navigator::goBack,
+                    onLevelsClick = navigator::goBack,
+                    onNextLevelClick = { nextLevel, remainingLevels ->
+                        navigator.goBack()
+                        navigator.navigate(
+                            GameNavKey(
+                                level = nextLevel,
+                                remainingLevels = remainingLevels,
+                            ),
+                        )
+                    },
+                )
             }
         }
 

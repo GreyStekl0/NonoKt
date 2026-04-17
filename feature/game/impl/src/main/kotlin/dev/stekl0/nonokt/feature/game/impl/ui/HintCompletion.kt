@@ -61,12 +61,12 @@ internal fun calculateHintCompletion(
     return HintCompletion(rows = rows, columns = columns)
 }
 
-private fun filledRunsInRow(row: List<PlayerCellState>): List<Int> = filledRuns(length = row.size) { index -> row[index] }
+private fun filledRunsInRow(row: List<PlayerCellState>): List<Int> = filledRuns(length = row.size) { row[it] }
 
 private fun filledRunsInColumn(
     board: List<List<PlayerCellState>>,
     columnIndex: Int,
-): List<Int> = filledRuns(length = board.size) { rowIndex -> board[rowIndex][columnIndex] }
+): List<Int> = filledRuns(length = board.size) { board[it][columnIndex] }
 
 private inline fun filledRuns(
     length: Int,

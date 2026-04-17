@@ -54,7 +54,7 @@ private val Tab.icon: ImageVector
 
 @Composable
 internal fun LevelsScreen(
-    onLevelClick: (GameLevel) -> Unit,
+    onLevelClick: (GameLevel, List<GameLevel>) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LevelsViewModel = koinViewModel(),
 ) {
@@ -71,7 +71,7 @@ internal fun LevelsScreen(
 private fun LevelsContent(
     state: LevelsState,
     onTabSelect: (Int) -> Unit,
-    onLevelClick: (GameLevel) -> Unit,
+    onLevelClick: (GameLevel, List<GameLevel>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -112,7 +112,10 @@ private fun LevelsTabRow(
 ) {
     PrimaryTabRow(
         selectedTabIndex = selectedTab.ordinal,
-        modifier = modifier.fillMaxWidth().statusBarsPadding(),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .statusBarsPadding(),
     ) {
         Tab.entries.forEachIndexed { index, tab ->
             Tab(
@@ -311,7 +314,7 @@ private fun LevelsScreenSmallPreview() {
                 levelPacks = previewLevelPacks(),
             ),
         onTabSelect = {},
-        onLevelClick = {},
+        onLevelClick = { _, _ -> },
     )
 }
 
@@ -325,7 +328,7 @@ private fun LevelsScreenMediumPreview() {
                 levelPacks = previewLevelPacks(),
             ),
         onTabSelect = {},
-        onLevelClick = {},
+        onLevelClick = { _, _ -> },
     )
 }
 

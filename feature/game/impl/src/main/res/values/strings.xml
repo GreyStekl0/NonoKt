@@ -11,4 +11,7 @@
     <string name="game_progress_in_progress">In progress</string>
     <string name="game_progress_solved">Solved</string>
     <string name="game_progress_failed">Failed</string>
+    <string name="game_completion_title">Level completed</string>
+    <string name="game_completion_levels">Level list</string>
+    <string name="game_completion_next">Next level</string>
 </resources>

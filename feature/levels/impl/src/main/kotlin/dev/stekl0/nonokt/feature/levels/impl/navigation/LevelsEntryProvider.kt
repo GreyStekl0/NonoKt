@@ -6,7 +6,7 @@ import dev.stekl0.nonokt.feature.game.api.GameLevel
 import dev.stekl0.nonokt.feature.levels.api.LevelsNavKey
 import dev.stekl0.nonokt.feature.levels.impl.LevelsScreen
 
-public fun EntryProviderScope<NavKey>.levelsEntry(onLevelClick: (GameLevel) -> Unit) {
+public fun EntryProviderScope<NavKey>.levelsEntry(onLevelClick: (GameLevel, List<GameLevel>) -> Unit) {
     entry<LevelsNavKey> {
         LevelsScreen(onLevelClick = onLevelClick)
     }
