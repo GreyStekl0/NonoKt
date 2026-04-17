@@ -22,8 +22,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.stekl0.nonokt.core.designsystem.draw.drawLevelSilhouette
-import dev.stekl0.nonokt.core.designsystem.draw.levelSilhouetteColor
+import dev.stekl0.nonokt.core.ui.draw.drawLevelSilhouette
+import dev.stekl0.nonokt.core.ui.draw.levelSilhouetteColor
 import dev.stekl0.nonokt.feature.game.api.GameLevel
 import kotlinx.collections.immutable.ImmutableList
 

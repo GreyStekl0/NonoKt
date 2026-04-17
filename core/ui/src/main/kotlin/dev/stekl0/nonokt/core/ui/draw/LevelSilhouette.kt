@@ -1,4 +1,4 @@
-package dev.stekl0.nonokt.core.designsystem.draw
+package dev.stekl0.nonokt.core.ui.draw
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

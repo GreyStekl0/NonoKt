@@ -22,8 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import dev.stekl0.nonokt.core.designsystem.draw.drawLevelSilhouette
-import dev.stekl0.nonokt.core.designsystem.draw.levelSilhouetteColor
+import dev.stekl0.nonokt.core.ui.draw.drawLevelSilhouette
+import dev.stekl0.nonokt.core.ui.draw.levelSilhouetteColor
 import dev.stekl0.nonokt.feature.game.api.GameLevel
 import dev.stekl0.nonokt.feature.game.impl.R
 

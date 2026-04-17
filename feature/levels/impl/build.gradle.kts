@@ -12,6 +12,7 @@ android {
 dependencies {
     implementation(projects.feature.levels.api)
     implementation(projects.feature.game.api)
+    implementation(projects.core.ui)
     implementation(libs.bundles.flowmvi)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.serialization.json)
