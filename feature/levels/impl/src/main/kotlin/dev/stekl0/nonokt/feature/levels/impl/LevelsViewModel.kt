@@ -17,7 +17,7 @@ internal class LevelsViewModel(
     private val appContext: Context,
 ) : ViewModel(),
     Container<LevelsState, LevelsIntent, Nothing> {
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json = Json
 
     override val store =
         store(
