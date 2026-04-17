@@ -19,10 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.stekl0.nonokt.core.designsystem.draw.drawLevelSilhouette
+import dev.stekl0.nonokt.core.designsystem.draw.levelSilhouetteColor
 import dev.stekl0.nonokt.feature.game.api.GameLevel
 import kotlinx.collections.immutable.ImmutableList
 
@@ -112,7 +113,7 @@ private fun LevelTile(
 private fun LevelThumbnail(
     level: GameLevel,
     modifier: Modifier = Modifier,
-    foregroundColor: Color = MaterialTheme.colorScheme.onSurface,
+    foregroundColor: Color = levelSilhouetteColor(),
 ) {
     Canvas(modifier = modifier) {
         val boardSize = level.size
@@ -125,20 +126,11 @@ private fun LevelThumbnail(
                 y = (size.height - boardDimension) / 2f,
             )
 
-        level.solution.forEachIndexed { rowIndex, row ->
-            row.forEachIndexed { columnIndex, cell ->
-                if (cell == '1') {
-                    drawRect(
-                        color = foregroundColor,
-                        topLeft =
-                            Offset(
-                                x = boardOrigin.x + (columnIndex * cellSize),
-                                y = boardOrigin.y + (rowIndex * cellSize),
-                            ),
-                        size = Size(width = cellSize, height = cellSize),
-                    )
-                }
-            }
-        }
+        drawLevelSilhouette(
+            solution = level.solution,
+            boardOrigin = boardOrigin,
+            cellSize = cellSize,
+            color = foregroundColor,
+        )
     }
 }

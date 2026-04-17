@@ -17,13 +17,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import dev.stekl0.nonokt.core.designsystem.draw.drawLevelSilhouette
+import dev.stekl0.nonokt.core.designsystem.draw.levelSilhouetteColor
 import dev.stekl0.nonokt.feature.game.api.GameLevel
 import dev.stekl0.nonokt.feature.game.impl.R
 
@@ -155,8 +155,7 @@ private fun SolvedLevelPreview(
     level: GameLevel,
     modifier: Modifier = Modifier,
 ) {
-    val foregroundColor = MaterialTheme.colorScheme.primary
-    val gridColor = MaterialTheme.colorScheme.outlineVariant
+    val foregroundColor = levelSilhouetteColor()
 
     Canvas(modifier = modifier) {
         val boardSize = level.size
@@ -168,60 +167,11 @@ private fun SolvedLevelPreview(
                 y = (size.height - boardDimension) / 2f,
             )
 
-        drawBoardGrid(
-            boardSize = boardSize,
-            cellSize = cellSize,
+        drawLevelSilhouette(
+            solution = level.solution,
             boardOrigin = boardOrigin,
-            gridColor = gridColor,
-        )
-
-        level.solution.forEachIndexed { rowIndex, row ->
-            row.forEachIndexed { columnIndex, cell ->
-                if (cell == '1') {
-                    drawRect(
-                        color = foregroundColor,
-                        topLeft =
-                            Offset(
-                                x = boardOrigin.x + (columnIndex * cellSize),
-                                y = boardOrigin.y + (rowIndex * cellSize),
-                            ),
-                        size = Size(width = cellSize, height = cellSize),
-                    )
-                }
-            }
-        }
-    }
-}
-
-private fun DrawScope.drawBoardGrid(
-    boardSize: Int,
-    cellSize: Float,
-    boardOrigin: Offset,
-    gridColor: Color,
-) {
-    repeat(boardSize + 1) { index ->
-        val offset = index * cellSize
-
-        drawLine(
-            color = gridColor,
-            start = Offset(x = boardOrigin.x + offset, y = boardOrigin.y),
-            end =
-                Offset(
-                    x = boardOrigin.x + offset,
-                    y = boardOrigin.y + boardSize * cellSize,
-                ),
-            strokeWidth = 1f,
-        )
-
-        drawLine(
-            color = gridColor,
-            start = Offset(x = boardOrigin.x, y = boardOrigin.y + offset),
-            end =
-                Offset(
-                    x = boardOrigin.x + boardSize * cellSize,
-                    y = boardOrigin.y + offset,
-                ),
-            strokeWidth = 1f,
+            cellSize = cellSize,
+            color = foregroundColor,
         )
     }
 }
