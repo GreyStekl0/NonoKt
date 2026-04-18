@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "dev.stekl0.nonokt"
         versionCode = 1
-        versionName = "1.0.0" // X.Y.Z; X = Major, Y = minor, Z = Patch level
+        versionName = "0.0.1" // X.Y.Z; X = Major, Y = minor, Z = Patch level
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
