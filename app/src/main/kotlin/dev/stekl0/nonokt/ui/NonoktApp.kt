@@ -16,6 +16,7 @@ import dev.stekl0.nonokt.feature.game.api.GameNavKey
 import dev.stekl0.nonokt.feature.game.impl.navigation.gameEntry
 import dev.stekl0.nonokt.feature.levels.api.LevelsNavKey
 import dev.stekl0.nonokt.feature.levels.impl.navigation.levelsEntry
+import java.util.UUID
 
 @Composable
 public fun NonoktApp(modifier: Modifier = Modifier) {
@@ -26,11 +27,9 @@ public fun NonoktApp(modifier: Modifier = Modifier) {
             entryProvider {
                 levelsEntry(
                     onLevelClick = { level, remainingLevels ->
-                        navigator.navigate(
-                            GameNavKey(
-                                level = level,
-                                remainingLevels = remainingLevels,
-                            ),
+                        navigator.navigateToGameLevel(
+                            level = level,
+                            remainingLevels = remainingLevels,
                         )
                     },
                 )
@@ -44,7 +43,8 @@ public fun NonoktApp(modifier: Modifier = Modifier) {
                         )
                     },
                     onNextLevelClick = { nextLevel, remainingLevels ->
-                        navigator.restartGameLevel(
+                        navigator.goBack()
+                        navigator.navigateToGameLevel(
                             level = nextLevel,
                             remainingLevels = remainingLevels,
                         )
@@ -71,10 +71,23 @@ private fun Navigator.restartGameLevel(
     remainingLevels: List<GameLevel>,
 ) {
     goBack()
+    navigateToGameLevel(
+        level = level,
+        remainingLevels = remainingLevels,
+        instanceId = UUID.randomUUID().toString(),
+    )
+}
+
+private fun Navigator.navigateToGameLevel(
+    level: GameLevel,
+    remainingLevels: List<GameLevel>,
+    instanceId: String = "",
+) {
     navigate(
         GameNavKey(
             level = level,
             remainingLevels = remainingLevels,
+            instanceId = instanceId,
         ),
     )
 }

@@ -7,4 +7,5 @@ import kotlinx.serialization.Serializable
 public data class GameNavKey(
     val level: GameLevel,
     val remainingLevels: List<GameLevel> = emptyList(),
+    val instanceId: String = "",
 ) : NavKey
