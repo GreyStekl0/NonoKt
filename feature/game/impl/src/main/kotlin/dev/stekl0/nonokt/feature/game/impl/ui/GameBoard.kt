@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -264,7 +265,7 @@ private fun BoardGrid(
                 row.forEachIndexed { columnIndex, cellState ->
                     BoardCell(
                         cellState = cellState,
-                        modifier = Modifier.size(cellSize),
+                        modifier = Modifier.size(cellSize).testTag("game_cell:$rowIndex:$columnIndex"),
                         enabled = state.isInteractionEnabled,
                         strokes =
                             boardCellStrokes(

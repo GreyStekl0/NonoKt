@@ -19,11 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.stekl0.nonokt.core.ui.draw.drawLevelSilhouette
-import dev.stekl0.nonokt.core.ui.draw.levelSilhouetteColor
 import dev.stekl0.nonokt.feature.game.api.GameLevel
 import kotlinx.collections.immutable.ImmutableList
 
@@ -83,6 +82,7 @@ private fun LevelTile(
         modifier =
             modifier
                 .aspectRatio(1f)
+                .testTag("level:${level.id}")
                 .clickable(onClick = onClick),
         border =
             BorderStroke(
@@ -113,8 +113,9 @@ private fun LevelTile(
 private fun LevelThumbnail(
     level: GameLevel,
     modifier: Modifier = Modifier,
-    foregroundColor: Color = levelSilhouetteColor(),
 ) {
+    val foregroundColor = MaterialTheme.colorScheme.onSurface
+
     Canvas(modifier = modifier) {
         val boardSize = level.size
 

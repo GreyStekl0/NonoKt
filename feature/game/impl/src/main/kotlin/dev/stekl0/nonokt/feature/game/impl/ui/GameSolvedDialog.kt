@@ -17,13 +17,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.stekl0.nonokt.core.ui.draw.drawLevelSilhouette
-import dev.stekl0.nonokt.core.ui.draw.levelSilhouetteColor
 import dev.stekl0.nonokt.feature.game.api.GameLevel
 import dev.stekl0.nonokt.feature.game.impl.R
 
@@ -70,6 +69,7 @@ private fun GameSolvedDialogContainer(
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
         modifier =
             Modifier
+                .testTag("game_solved_dialog")
                 .fillMaxWidth()
                 .heightIn(min = DialogMinHeight),
     ) {
@@ -129,13 +129,13 @@ private fun SolvedDialogActions(
         ) {
             OutlinedButton(
                 onClick = onLevelsClick,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).testTag("game_solved_levels"),
             ) {
                 Text(text = stringResource(R.string.game_completion_levels))
             }
             Button(
                 onClick = onNextLevelClick,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).testTag("game_solved_next"),
             ) {
                 Text(text = stringResource(R.string.game_completion_next))
             }
@@ -143,7 +143,7 @@ private fun SolvedDialogActions(
     } else {
         Button(
             onClick = onLevelsClick,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("game_solved_levels"),
         ) {
             Text(text = stringResource(R.string.game_completion_levels))
         }
@@ -155,7 +155,7 @@ private fun SolvedLevelPreview(
     level: GameLevel,
     modifier: Modifier = Modifier,
 ) {
-    val foregroundColor = levelSilhouetteColor()
+    val foregroundColor = MaterialTheme.colorScheme.onSurface
 
     Canvas(modifier = modifier) {
         val boardSize = level.size

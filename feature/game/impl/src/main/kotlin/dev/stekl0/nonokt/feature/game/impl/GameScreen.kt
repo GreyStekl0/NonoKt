@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +42,7 @@ import dev.stekl0.nonokt.core.designsystem.icon.Redo
 import dev.stekl0.nonokt.core.designsystem.icon.Undo
 import dev.stekl0.nonokt.feature.game.api.GameLevel
 import dev.stekl0.nonokt.feature.game.impl.GameLimits.MAX_ERROR_COUNT
+import dev.stekl0.nonokt.feature.game.impl.ui.GameFailedDialog
 import dev.stekl0.nonokt.feature.game.impl.ui.GameSolvedDialog
 import dev.stekl0.nonokt.feature.game.impl.ui.NonogramBoard
 import org.koin.compose.viewmodel.koinViewModel
@@ -56,6 +58,7 @@ internal fun GameScreen(
     level: GameLevel,
     onBackClick: () -> Unit,
     onLevelsClick: () -> Unit,
+    onRestartClick: () -> Unit,
     onNextLevelClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
     viewModel: GameViewModel = koinViewModel(parameters = { parametersOf(level) }),
@@ -66,6 +69,7 @@ internal fun GameScreen(
         state = state,
         onBackClick = onBackClick,
         onLevelsClick = onLevelsClick,
+        onRestartClick = onRestartClick,
         onNextLevelClick = onNextLevelClick,
         onCellPress = viewModel::onCellPressed,
         onUndoClick = viewModel::undo,
@@ -80,6 +84,7 @@ private fun GameContent(
     state: GameState,
     onBackClick: () -> Unit,
     onLevelsClick: () -> Unit,
+    onRestartClick: () -> Unit,
     onNextLevelClick: (() -> Unit)?,
     onCellPress: (Int, Int) -> Unit,
     onUndoClick: () -> Unit,
@@ -88,12 +93,15 @@ private fun GameContent(
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.testTag("game:${state.level.id}"),
         topBar = {
             TopAppBar(
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
+                    IconButton(
+                        onClick = onBackClick,
+                        modifier = Modifier.testTag("game_back"),
+                    ) {
                         Icon(
                             imageVector = ArrowBack,
                             contentDescription = stringResource(R.string.game_back),
@@ -135,12 +143,36 @@ private fun GameContent(
             )
         }
 
-        if (state.isSolved) {
+        GameOutcomeDialog(
+            state = state,
+            onLevelsClick = onLevelsClick,
+            onRestartClick = onRestartClick,
+            onNextLevelClick = onNextLevelClick,
+        )
+    }
+}
+
+@Composable
+private fun GameOutcomeDialog(
+    state: GameState,
+    onLevelsClick: () -> Unit,
+    onRestartClick: () -> Unit,
+    onNextLevelClick: (() -> Unit)?,
+) {
+    when {
+        state.isSolved -> {
             GameSolvedDialog(
                 level = state.level,
                 hasNextLevel = onNextLevelClick != null,
                 onLevelsClick = onLevelsClick,
                 onNextLevelClick = onNextLevelClick,
+            )
+        }
+
+        state.isFailed -> {
+            GameFailedDialog(
+                onLevelsClick = onLevelsClick,
+                onRestartClick = onRestartClick,
             )
         }
     }
@@ -369,6 +401,7 @@ private fun GameScreenPreview() {
         state = PreviewState,
         onBackClick = {},
         onLevelsClick = {},
+        onRestartClick = {},
         onNextLevelClick = null,
         onCellPress = { _, _ -> },
         onUndoClick = {},
@@ -384,6 +417,7 @@ private fun GameScreenCompactPreview() {
         state = PreviewState,
         onBackClick = {},
         onLevelsClick = {},
+        onRestartClick = {},
         onNextLevelClick = null,
         onCellPress = { _, _ -> },
         onUndoClick = {},

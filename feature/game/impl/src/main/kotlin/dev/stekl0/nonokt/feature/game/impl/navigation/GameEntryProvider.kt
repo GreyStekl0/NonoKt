@@ -9,6 +9,7 @@ import dev.stekl0.nonokt.feature.game.impl.GameScreen
 public fun EntryProviderScope<NavKey>.gameEntry(
     onBackClick: () -> Unit,
     onLevelsClick: () -> Unit,
+    onRestartLevelClick: (GameLevel, List<GameLevel>) -> Unit,
     onNextLevelClick: (GameLevel, List<GameLevel>) -> Unit,
 ) {
     entry<GameNavKey> { key ->
@@ -17,6 +18,12 @@ public fun EntryProviderScope<NavKey>.gameEntry(
             level = key.level,
             onBackClick = onBackClick,
             onLevelsClick = onLevelsClick,
+            onRestartClick = {
+                onRestartLevelClick(
+                    key.level,
+                    key.remainingLevels,
+                )
+            },
             onNextLevelClick =
                 if (nextLevel == null) {
                     null

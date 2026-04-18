@@ -8,8 +8,10 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import dev.stekl0.nonokt.core.navigation.Navigator
 import dev.stekl0.nonokt.core.navigation.rememberNavigationState
 import dev.stekl0.nonokt.core.navigation.rememberNavigator
+import dev.stekl0.nonokt.feature.game.api.GameLevel
 import dev.stekl0.nonokt.feature.game.api.GameNavKey
 import dev.stekl0.nonokt.feature.game.impl.navigation.gameEntry
 import dev.stekl0.nonokt.feature.levels.api.LevelsNavKey
@@ -35,13 +37,16 @@ public fun NonoktApp(modifier: Modifier = Modifier) {
                 gameEntry(
                     onBackClick = navigator::goBack,
                     onLevelsClick = navigator::goBack,
+                    onRestartLevelClick = { level, remainingLevels ->
+                        navigator.restartGameLevel(
+                            level = level,
+                            remainingLevels = remainingLevels,
+                        )
+                    },
                     onNextLevelClick = { nextLevel, remainingLevels ->
-                        navigator.goBack()
-                        navigator.navigate(
-                            GameNavKey(
-                                level = nextLevel,
-                                remainingLevels = remainingLevels,
-                            ),
+                        navigator.restartGameLevel(
+                            level = nextLevel,
+                            remainingLevels = remainingLevels,
                         )
                     },
                 )
@@ -58,5 +63,18 @@ public fun NonoktApp(modifier: Modifier = Modifier) {
                 rememberViewModelStoreNavEntryDecorator(),
             ),
         entryProvider = entryProvider,
+    )
+}
+
+private fun Navigator.restartGameLevel(
+    level: GameLevel,
+    remainingLevels: List<GameLevel>,
+) {
+    goBack()
+    navigate(
+        GameNavKey(
+            level = level,
+            remainingLevels = remainingLevels,
+        ),
     )
 }
