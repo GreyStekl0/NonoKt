@@ -2,6 +2,8 @@ package dev.stekl0.nonokt.feature.game.impl.ui
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
 
 internal val ThinGridStroke: Dp = 0.75.dp
 internal val ThickGridStroke: Dp = 1.75.dp
@@ -9,7 +11,7 @@ internal val ThickGridStroke: Dp = 1.75.dp
 internal fun paddedHintValues(
     values: List<Int>,
     targetSize: Int,
-): List<Int?> = List(targetSize - values.size) { null } + values
+): ImmutableList<Int?> = (List(targetSize - values.size) { null } + values).toPersistentList()
 
 internal fun columnHintCellStrokes(
     hintRowIndex: Int,
