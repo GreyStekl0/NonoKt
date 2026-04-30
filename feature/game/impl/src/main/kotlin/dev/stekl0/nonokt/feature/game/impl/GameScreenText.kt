@@ -6,22 +6,22 @@ import androidx.compose.ui.res.stringResource
 @Composable
 internal fun GameMode.label(): String =
     when (this) {
-        GameMode.FILL -> stringResource(R.string.game_mode_fill)
-        GameMode.MARK -> stringResource(R.string.game_mode_mark)
+        GameMode.FILL -> stringResource(R.string.feature_game_impl_game_mode_fill)
+        GameMode.MARK -> stringResource(R.string.feature_game_impl_game_mode_mark)
     }
 
 @Composable
 internal fun GameState.progressLabel(): String =
     when {
-        isSolved -> stringResource(R.string.game_progress_solved)
-        isFailed -> stringResource(R.string.game_progress_failed)
-        else -> stringResource(R.string.game_progress_in_progress)
+        isSolved -> stringResource(R.string.feature_game_impl_game_progress_solved)
+        isFailed -> stringResource(R.string.feature_game_impl_game_progress_failed)
+        else -> stringResource(R.string.feature_game_impl_game_progress_in_progress)
     }
 
 @Composable
 internal fun gameErrorsText(state: GameState): String =
     stringResource(
-        R.string.game_errors_value,
+        R.string.feature_game_impl_game_errors_value,
         state.errorCount,
         GameLimits.MAX_ERROR_COUNT,
     )
@@ -31,7 +31,7 @@ internal fun gameSizeText(state: GameState): String {
     val boardSize = state.level.size
 
     return stringResource(
-        R.string.game_size_value,
+        R.string.feature_game_impl_game_size_value,
         boardSize,
         boardSize,
     )

@@ -25,23 +25,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.stekl0.nonokt.core.designsystem.icon.BorderAll
 import dev.stekl0.nonokt.core.designsystem.icon.CropSquare
 import dev.stekl0.nonokt.core.designsystem.icon.GridOn
-import dev.stekl0.nonokt.feature.game.api.GameLevel
+import dev.stekl0.nonokt.feature.game.impl.GameLevel
 import dev.stekl0.nonokt.feature.levels.impl.ui.LevelsGrid
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.koin.compose.viewmodel.koinViewModel
-import pro.respawn.flowmvi.compose.dsl.subscribe
 
 private val Tab.labelRes: Int
     @StringRes
     get() =
         when (this) {
-            Tab.SMALL -> R.string.levels_tab_small
-            Tab.MEDIUM -> R.string.levels_tab_medium
-            Tab.LARGE -> R.string.levels_tab_large
+            Tab.SMALL -> R.string.feature_levels_impl_levels_tab_small
+            Tab.MEDIUM -> R.string.feature_levels_impl_levels_tab_medium
+            Tab.LARGE -> R.string.feature_levels_impl_levels_tab_large
         }
 
 private val Tab.icon: ImageVector
@@ -54,11 +54,11 @@ private val Tab.icon: ImageVector
 
 @Composable
 internal fun LevelsScreen(
-    onLevelClick: (GameLevel, List<GameLevel>) -> Unit,
+    onLevelClick: (String, Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LevelsViewModel = koinViewModel(),
 ) {
-    val state by viewModel.store.subscribe()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     LevelsContent(
         state = state,
         onTabSelect = viewModel::onTabSelected,
@@ -71,7 +71,7 @@ internal fun LevelsScreen(
 private fun LevelsContent(
     state: LevelsState,
     onTabSelect: (Int) -> Unit,
-    onLevelClick: (GameLevel, List<GameLevel>) -> Unit,
+    onLevelClick: (String, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -93,6 +93,7 @@ private fun LevelsContent(
             )
         } else {
             LevelsGrid(
+                packId = state.selectedTab.packId,
                 levels = state.levels,
                 onLevelClick = onLevelClick,
                 modifier =
@@ -163,11 +164,11 @@ private fun EmptyLevelsState(
                     tint = MaterialTheme.colorScheme.primary,
                 )
                 Text(
-                    text = stringResource(R.string.levels_empty_title),
+                    text = stringResource(R.string.feature_levels_impl_levels_empty_title),
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Text(
-                    text = stringResource(R.string.levels_empty_description),
+                    text = stringResource(R.string.feature_levels_impl_levels_empty_description),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -332,8 +333,8 @@ private fun LevelsScreenMediumPreview() {
     )
 }
 
-private fun previewLevelPacks(): ImmutableMap<Tab, LevelPack> =
+private fun previewLevelPacks(): ImmutableMap<String, LevelPack> =
     mapOf(
-        Tab.SMALL to LevelPack(levels = PreviewSmallLevels),
-        Tab.MEDIUM to LevelPack(levels = PreviewMediumLevels),
+        Tab.SMALL.packId to LevelPack(levels = PreviewSmallLevels),
+        Tab.MEDIUM.packId to LevelPack(levels = PreviewMediumLevels),
     ).toImmutableMap()

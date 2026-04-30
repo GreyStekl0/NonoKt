@@ -1,7 +1,7 @@
 <resources>
-    <string name="levels_tab_small">Малые</string>
-    <string name="levels_tab_medium">Средние</string>
-    <string name="levels_tab_large">Большие</string>
-    <string name="levels_empty_title">Пока нет уровней</string>
-    <string name="levels_empty_description">Добавь набор уровней для этой категории, и сетка появится здесь.</string>
+    <string name="feature_levels_impl_levels_tab_small">Малые</string>
+    <string name="feature_levels_impl_levels_tab_medium">Средние</string>
+    <string name="feature_levels_impl_levels_tab_large">Большие</string>
+    <string name="feature_levels_impl_levels_empty_title">Пока нет уровней</string>
+    <string name="feature_levels_impl_levels_empty_description">Добавь набор уровней для этой категории, и сетка появится здесь.</string>
 </resources>

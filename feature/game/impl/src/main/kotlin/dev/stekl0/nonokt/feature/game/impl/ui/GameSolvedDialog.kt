@@ -2,12 +2,10 @@ package dev.stekl0.nonokt.feature.game.impl.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -20,16 +18,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import dev.stekl0.nonokt.core.ui.draw.drawLevelSilhouette
-import dev.stekl0.nonokt.feature.game.api.GameLevel
+import dev.stekl0.nonokt.feature.game.impl.GameLevel
 import dev.stekl0.nonokt.feature.game.impl.R
 
 private val DialogMinHeight = 320.dp
-private val DialogPadding = 20.dp
-private val DialogSpacing = 16.dp
-private val DialogActionSpacing = 12.dp
 private val PreviewPadding = 24.dp
 
 @Composable
@@ -39,57 +32,18 @@ internal fun GameSolvedDialog(
     onLevelsClick: () -> Unit,
     onNextLevelClick: (() -> Unit)?,
 ) {
-    Dialog(
-        onDismissRequest = {},
-        properties =
-            DialogProperties(
-                dismissOnBackPress = false,
-                dismissOnClickOutside = false,
-            ),
+    GameOutcomeDialogScaffold(
+        title = R.string.feature_game_impl_game_completion_title,
+        testTag = "game_solved_dialog",
+        minHeight = DialogMinHeight,
     ) {
-        GameSolvedDialogContainer(
-            level = level,
+        SolvedDialogPreview(level = level)
+
+        SolvedDialogActions(
             hasNextLevel = hasNextLevel,
             onLevelsClick = onLevelsClick,
             onNextLevelClick = onNextLevelClick,
         )
-    }
-}
-
-@Composable
-private fun GameSolvedDialogContainer(
-    level: GameLevel,
-    hasNextLevel: Boolean,
-    onLevelsClick: () -> Unit,
-    onNextLevelClick: (() -> Unit)?,
-) {
-    Surface(
-        shape = MaterialTheme.shapes.extraLarge,
-        tonalElevation = 6.dp,
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        modifier =
-            Modifier
-                .testTag("game_solved_dialog")
-                .fillMaxWidth()
-                .heightIn(min = DialogMinHeight),
-    ) {
-        Column(
-            modifier = Modifier.padding(DialogPadding),
-            verticalArrangement = Arrangement.spacedBy(DialogSpacing),
-        ) {
-            Text(
-                text = stringResource(R.string.game_completion_title),
-                style = MaterialTheme.typography.titleLarge,
-            )
-
-            SolvedDialogPreview(level = level)
-
-            SolvedDialogActions(
-                hasNextLevel = hasNextLevel,
-                onLevelsClick = onLevelsClick,
-                onNextLevelClick = onNextLevelClick,
-            )
-        }
     }
 }
 
@@ -125,19 +79,19 @@ private fun SolvedDialogActions(
     if (hasNextLevel && onNextLevelClick != null) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(DialogActionSpacing),
+            horizontalArrangement = Arrangement.spacedBy(GameOutcomeDialogActionSpacing),
         ) {
             OutlinedButton(
                 onClick = onLevelsClick,
                 modifier = Modifier.weight(1f).testTag("game_solved_levels"),
             ) {
-                Text(text = stringResource(R.string.game_completion_levels))
+                Text(text = stringResource(R.string.feature_game_impl_game_completion_levels))
             }
             Button(
                 onClick = onNextLevelClick,
                 modifier = Modifier.weight(1f).testTag("game_solved_next"),
             ) {
-                Text(text = stringResource(R.string.game_completion_next))
+                Text(text = stringResource(R.string.feature_game_impl_game_completion_next))
             }
         }
     } else {
@@ -145,7 +99,7 @@ private fun SolvedDialogActions(
             onClick = onLevelsClick,
             modifier = Modifier.fillMaxWidth().testTag("game_solved_levels"),
         ) {
-            Text(text = stringResource(R.string.game_completion_levels))
+            Text(text = stringResource(R.string.feature_game_impl_game_completion_levels))
         }
     }
 }

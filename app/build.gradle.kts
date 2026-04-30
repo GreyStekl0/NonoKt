@@ -22,6 +22,7 @@ android {
         }
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -33,9 +34,7 @@ android {
 dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(projects.core.navigation)
-    implementation(projects.feature.game.api)
     implementation(projects.feature.game.impl)
-    implementation(projects.feature.levels.api)
     implementation(projects.feature.levels.impl)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.navigation3.ui)

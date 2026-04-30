@@ -1,8 +1,6 @@
-package dev.stekl0.nonokt.feature.game.api
+package dev.stekl0.nonokt.feature.game.impl
 
 import androidx.compose.runtime.Immutable
-import androidx.navigation3.runtime.NavKey
-import dev.stekl0.nonokt.core.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable

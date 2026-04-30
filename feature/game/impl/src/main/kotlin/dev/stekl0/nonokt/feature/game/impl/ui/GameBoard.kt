@@ -11,19 +11,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.stekl0.nonokt.feature.game.impl.GameState
-import dev.stekl0.nonokt.feature.game.impl.LineHint
 import dev.stekl0.nonokt.feature.game.impl.PlayerCellState
+import dev.stekl0.nonokt.feature.game.impl.R
 
 private val BoardPadding: Dp = 16.dp
 
@@ -65,16 +68,17 @@ internal fun NonogramBoard(
                         height = layout.columnHintHeight,
                     )
                     ColumnHints(
-                        state = state,
-                        completion = hintCompletion,
+                        hints = state.columnHints,
+                        completions = hintCompletion.columns,
                         boardSize = layout.boardSize,
                         cellSize = layout.cellSize,
                     )
                 }
                 Row(modifier = Modifier.height(layout.boardHeight)) {
                     RowHints(
-                        state = state,
-                        completion = hintCompletion,
+                        hints = state.rowHints,
+                        completions = hintCompletion.rows,
+                        maxHintCount = state.maxRowHintCount,
                         boardSize = layout.boardSize,
                         cellSize = layout.cellSize,
                     )
@@ -115,140 +119,6 @@ private fun HintCorner(
 }
 
 @Composable
-private fun ColumnHints(
-    state: GameState,
-    completion: HintCompletion,
-    boardSize: Int,
-    cellSize: Dp,
-) {
-    Row(
-        modifier = Modifier.width(cellSize * boardSize),
-    ) {
-        state.columnHints.forEachIndexed { columnIndex, hint ->
-            ColumnHint(
-                hint = hint,
-                completion = completion.columns[columnIndex],
-                columnIndex = columnIndex,
-                columnCount = boardSize,
-                cellSize = cellSize,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ColumnHint(
-    hint: LineHint,
-    completion: HintCompletionLine,
-    columnIndex: Int,
-    columnCount: Int,
-    cellSize: Dp,
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    val hintRowCount = completion.values.size
-    val values =
-        remember(
-            hint.values,
-            hintRowCount,
-        ) {
-            paddedHintValues(
-                values = hint.values,
-                targetSize = hintRowCount,
-            )
-        }
-
-    Column(
-        modifier = Modifier.width(cellSize),
-    ) {
-        values.forEachIndexed { hintRowIndex, value ->
-            HintCell(
-                value = value,
-                modifier = Modifier.size(cellSize),
-                textColor =
-                    hintTextColor(
-                        isCompleted = completion.values[hintRowIndex],
-                        colorScheme = colorScheme,
-                    ),
-                strokes =
-                    columnHintCellStrokes(
-                        hintRowIndex = hintRowIndex,
-                        hintRowCount = hintRowCount,
-                        columnIndex = columnIndex,
-                        columnCount = columnCount,
-                    ),
-            )
-        }
-    }
-}
-
-@Composable
-private fun RowHints(
-    state: GameState,
-    completion: HintCompletion,
-    boardSize: Int,
-    cellSize: Dp,
-) {
-    Column(
-        modifier = Modifier.width(cellSize * state.maxRowHintCount),
-    ) {
-        state.rowHints.forEachIndexed { rowIndex, hint ->
-            RowHint(
-                hint = hint,
-                completion = completion.rows[rowIndex],
-                rowIndex = rowIndex,
-                rowCount = boardSize,
-                cellSize = cellSize,
-            )
-        }
-    }
-}
-
-@Composable
-private fun RowHint(
-    hint: LineHint,
-    completion: HintCompletionLine,
-    rowIndex: Int,
-    rowCount: Int,
-    cellSize: Dp,
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    val hintColumnCount = completion.values.size
-    val values =
-        remember(
-            hint.values,
-            hintColumnCount,
-        ) {
-            paddedHintValues(
-                values = hint.values,
-                targetSize = hintColumnCount,
-            )
-        }
-
-    Row(
-        modifier = Modifier.height(cellSize),
-    ) {
-        values.forEachIndexed { hintColumnIndex, value ->
-            HintCell(
-                value = value,
-                modifier = Modifier.size(cellSize),
-                textColor =
-                    hintTextColor(
-                        isCompleted = completion.values[hintColumnIndex],
-                        colorScheme = colorScheme,
-                    ),
-                strokes =
-                    rowHintCellStrokes(
-                        rowIndex = rowIndex,
-                        rowCount = rowCount,
-                        hintColumnIndex = hintColumnIndex,
-                        hintColumnCount = hintColumnCount,
-                    ),
-            )
-        }
-    }
-}
-
-@Composable
 private fun BoardGrid(
     state: GameState,
     boardSize: Int,
@@ -265,6 +135,8 @@ private fun BoardGrid(
                 row.forEachIndexed { columnIndex, cellState ->
                     BoardCell(
                         cellState = cellState,
+                        rowIndex = rowIndex,
+                        columnIndex = columnIndex,
                         modifier = Modifier.size(cellSize).testTag("game_cell:$rowIndex:$columnIndex"),
                         enabled = state.isInteractionEnabled,
                         strokes =
@@ -283,35 +155,10 @@ private fun BoardGrid(
 }
 
 @Composable
-private fun HintCell(
-    value: Int?,
-    textColor: Color,
-    strokes: CellStrokeWidths,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier =
-            modifier.drawHintDecoration(
-                backgroundColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                strokes = strokes,
-                lineColor = MaterialTheme.colorScheme.outline,
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        value?.let {
-            Text(
-                text = it.toString(),
-                color = textColor,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.SemiBold,
-            )
-        }
-    }
-}
-
-@Composable
 private fun BoardCell(
     cellState: PlayerCellState,
+    rowIndex: Int,
+    columnIndex: Int,
     enabled: Boolean,
     strokes: CellStrokeWidths,
     onClick: () -> Unit,
@@ -332,12 +179,25 @@ private fun BoardCell(
             PlayerCellState.ERROR -> colorScheme.error
             else -> Color.Unspecified
         }
+    val cellDescription =
+        stringResource(
+            R.string.feature_game_impl_cell_description,
+            rowIndex + 1,
+            columnIndex + 1,
+        )
+    val cellStateDescription = cellState.description()
 
     Box(
         modifier =
             modifier
-                .clickable(enabled = enabled, onClick = onClick)
-                .drawBoardDecoration(
+                .semantics {
+                    contentDescription = cellDescription
+                    stateDescription = cellStateDescription
+                }.clickable(
+                    enabled = enabled,
+                    role = Role.Button,
+                    onClick = onClick,
+                ).drawBoardDecoration(
                     backgroundColor = backgroundColor,
                     strokes = strokes,
                     lineColor = colorScheme.outline,
@@ -345,3 +205,12 @@ private fun BoardCell(
                 ),
     )
 }
+
+@Composable
+private fun PlayerCellState.description(): String =
+    when (this) {
+        PlayerCellState.EMPTY -> stringResource(R.string.feature_game_impl_cell_empty)
+        PlayerCellState.FILLED -> stringResource(R.string.feature_game_impl_cell_filled)
+        PlayerCellState.MARKED -> stringResource(R.string.feature_game_impl_cell_marked)
+        PlayerCellState.ERROR -> stringResource(R.string.feature_game_impl_cell_error)
+    }

@@ -1,37 +1,49 @@
 package dev.stekl0.nonokt.feature.game.impl.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import dev.stekl0.nonokt.feature.game.api.GameLevel
-import dev.stekl0.nonokt.feature.game.api.GameNavKey
+import dev.stekl0.nonokt.feature.game.impl.GameLevel
 import dev.stekl0.nonokt.feature.game.impl.GameScreen
 
 public fun EntryProviderScope<NavKey>.gameEntry(
+    resolveLevels: (String) -> List<GameLevel>?,
     onBackClick: () -> Unit,
     onLevelsClick: () -> Unit,
-    onRestartLevelClick: (GameLevel, List<GameLevel>) -> Unit,
-    onNextLevelClick: (GameLevel, List<GameLevel>) -> Unit,
+    onRestartLevelClick: (String, Int) -> Unit,
+    onNextLevelClick: (String, Int) -> Unit,
 ) {
     entry<GameNavKey> { key ->
-        val nextLevel = key.remainingLevels.firstOrNull()
+        val levelPack = resolveLevels(key.packId)
+        val level = levelPack?.getOrNull(key.levelIndex)
+        if (level == null) {
+            LaunchedEffect(key) {
+                onLevelsClick()
+            }
+            return@entry
+        }
+
+        val nextLevelIndex =
+            (key.levelIndex + 1)
+                .takeIf { index -> index < levelPack.size }
         GameScreen(
-            level = key.level,
+            level = level,
             onBackClick = onBackClick,
             onLevelsClick = onLevelsClick,
             onRestartClick = {
                 onRestartLevelClick(
-                    key.level,
-                    key.remainingLevels,
+                    key.packId,
+                    key.levelIndex,
                 )
             },
             onNextLevelClick =
-                if (nextLevel == null) {
+                if (nextLevelIndex == null) {
                     null
                 } else {
                     {
                         onNextLevelClick(
-                            nextLevel,
-                            key.remainingLevels.drop(1),
+                            key.packId,
+                            nextLevelIndex,
                         )
                     }
                 },

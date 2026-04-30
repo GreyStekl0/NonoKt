@@ -9,13 +9,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,19 +38,18 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.stekl0.nonokt.core.designsystem.icon.ArrowBack
 import dev.stekl0.nonokt.core.designsystem.icon.Close
 import dev.stekl0.nonokt.core.designsystem.icon.Edit
 import dev.stekl0.nonokt.core.designsystem.icon.Redo
 import dev.stekl0.nonokt.core.designsystem.icon.Undo
-import dev.stekl0.nonokt.feature.game.api.GameLevel
 import dev.stekl0.nonokt.feature.game.impl.GameLimits.MAX_ERROR_COUNT
 import dev.stekl0.nonokt.feature.game.impl.ui.GameFailedDialog
 import dev.stekl0.nonokt.feature.game.impl.ui.GameSolvedDialog
 import dev.stekl0.nonokt.feature.game.impl.ui.NonogramBoard
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import pro.respawn.flowmvi.compose.dsl.subscribe
 
 private val ScreenHorizontalPadding = 16.dp
 private val ScreenVerticalPadding = 12.dp
@@ -63,7 +65,7 @@ internal fun GameScreen(
     modifier: Modifier = Modifier,
     viewModel: GameViewModel = koinViewModel(parameters = { parametersOf(level) }),
 ) {
-    val state by viewModel.store.subscribe()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     GameContent(
         state = state,
@@ -104,7 +106,7 @@ private fun GameContent(
                     ) {
                         Icon(
                             imageVector = ArrowBack,
-                            contentDescription = stringResource(R.string.game_back),
+                            contentDescription = stringResource(R.string.feature_game_impl_game_back),
                         )
                     }
                 },
@@ -117,6 +119,8 @@ private fun GameContent(
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
+                    .consumeWindowInsets(innerPadding)
+                    .verticalScroll(rememberScrollState())
                     .padding(
                         horizontal = ScreenHorizontalPadding,
                         vertical = ScreenVerticalPadding,
@@ -188,7 +192,7 @@ private fun GameSummaryPanel(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         SummaryCard(
-            title = R.string.game_errors_title,
+            title = R.string.feature_game_impl_game_errors_title,
             modifier = Modifier.weight(1f),
         ) {
             Text(
@@ -199,7 +203,7 @@ private fun GameSummaryPanel(
         }
 
         SummaryCard(
-            title = R.string.game_size_title,
+            title = R.string.feature_game_impl_game_size_title,
             modifier = Modifier.weight(1f),
         ) {
             Text(
@@ -355,7 +359,7 @@ private fun HistoryButtonsRow(
         ) {
             Icon(
                 imageVector = Undo,
-                contentDescription = stringResource(R.string.game_undo),
+                contentDescription = stringResource(R.string.feature_game_impl_game_undo),
             )
         }
 
@@ -365,7 +369,7 @@ private fun HistoryButtonsRow(
         ) {
             Icon(
                 imageVector = Redo,
-                contentDescription = stringResource(R.string.game_redo),
+                contentDescription = stringResource(R.string.feature_game_impl_game_redo),
             )
         }
     }

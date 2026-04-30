@@ -15,6 +15,7 @@ import android.os.StrictMode.ThreadPolicy.Builder as ThreadPolicyBuilder
 import android.os.StrictMode.VmPolicy.Builder as VmPolicyBuilder
 
 @KoinApplication(modules = [LevelsModule::class, GameModule::class])
+@Suppress("MissingKoinStopInTest")
 public class NonoktApplication : Application() {
     override fun onCreate() {
         super.onCreate()

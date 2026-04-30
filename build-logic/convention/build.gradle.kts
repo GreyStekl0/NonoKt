@@ -72,13 +72,6 @@ gradlePlugin {
                     .pluginId
             implementationClass = "AndroidFeatureImplConventionPlugin"
         }
-        register("androidFeatureApi") {
-            id =
-                libs.plugins.nonokt.android.feature.api
-                    .get()
-                    .pluginId
-            implementationClass = "AndroidFeatureApiConventionPlugin"
-        }
         register("jvmLibrary") {
             id =
                 libs.plugins.nonokt.jvm.library

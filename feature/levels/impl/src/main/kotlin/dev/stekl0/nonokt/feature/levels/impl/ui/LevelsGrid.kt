@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.stekl0.nonokt.core.ui.draw.drawLevelSilhouette
-import dev.stekl0.nonokt.feature.game.api.GameLevel
+import dev.stekl0.nonokt.feature.game.impl.GameLevel
 import kotlinx.collections.immutable.ImmutableList
 
 private val LevelGridSpacing: Dp = 12.dp
@@ -37,8 +37,9 @@ private object LevelsGridLayout {
 
 @Composable
 internal fun LevelsGrid(
+    packId: String,
     levels: ImmutableList<GameLevel>,
-    onLevelClick: (GameLevel, List<GameLevel>) -> Unit,
+    onLevelClick: (String, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
@@ -56,21 +57,14 @@ internal fun LevelsGrid(
                 level = level,
                 onClick = {
                     onLevelClick(
-                        level,
-                        levels.remainingLevelsAfter(index),
+                        packId,
+                        index,
                     )
                 },
             )
         }
     }
 }
-
-private fun ImmutableList<GameLevel>.remainingLevelsAfter(index: Int): List<GameLevel> =
-    if (index == lastIndex) {
-        emptyList()
-    } else {
-        subList(index + 1, size)
-    }
 
 @Composable
 private fun LevelTile(

@@ -1,13 +1,10 @@
 package dev.stekl0.nonokt.feature.game.impl
 
 import androidx.compose.runtime.Immutable
-import dev.stekl0.nonokt.feature.game.api.GameLevel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
-import pro.respawn.flowmvi.api.MVIState
-import pro.respawn.flowmvi.dsl.LambdaIntent
 
 internal object GameLimits {
     const val MAX_ERROR_COUNT: Int = 3
@@ -27,7 +24,7 @@ internal data class GameState(
     val errorCount: Int = 0,
     val pastMoves: PersistentList<GameMove> = persistentListOf(),
     val futureMoves: PersistentList<GameMove> = persistentListOf(),
-) : MVIState {
+) {
     val canUndo: Boolean
         get() = pastMoves.isNotEmpty()
 
@@ -204,8 +201,6 @@ internal data class GameState(
         }
     }
 }
-
-internal typealias GameIntent = LambdaIntent<GameState, Nothing>
 
 @Immutable
 internal data class LineHint(
