@@ -1,7 +1,6 @@
 koin-rules:
   AnnotationProcessorNotConfigured:
-    active: true
-    skipCheck: true
+    active: false
 
   NoKoinComponentInterface:
     active: true
