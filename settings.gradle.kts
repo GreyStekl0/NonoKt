@@ -35,9 +35,10 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 include(":core:designsystem")
 include(":core:navigation")
+include(":core:ui")
 
-include(":feature:levels:api")
 include(":feature:levels:impl")
+include(":feature:game:impl")
 
 check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
     """

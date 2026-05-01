@@ -10,8 +10,8 @@ android {
 }
 
 dependencies {
-    implementation(projects.feature.levels.api)
-    implementation(libs.bundles.flowmvi)
+    implementation(projects.feature.game.impl)
+    implementation(projects.core.ui)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)

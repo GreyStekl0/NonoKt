@@ -1,4 +1,7 @@
 koin-rules:
+  AnnotationProcessorNotConfigured:
+    active: false
+
   NoKoinComponentInterface:
     active: true
     allowedSuperTypes:

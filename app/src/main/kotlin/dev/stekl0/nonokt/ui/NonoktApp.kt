@@ -8,19 +8,51 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import dev.stekl0.nonokt.core.navigation.Navigator
 import dev.stekl0.nonokt.core.navigation.rememberNavigationState
 import dev.stekl0.nonokt.core.navigation.rememberNavigator
-import dev.stekl0.nonokt.feature.levels.api.LevelsNavKey
+import dev.stekl0.nonokt.feature.game.impl.navigation.GameNavKey
+import dev.stekl0.nonokt.feature.game.impl.navigation.gameEntry
+import dev.stekl0.nonokt.feature.levels.impl.LevelPackSource
+import dev.stekl0.nonokt.feature.levels.impl.navigation.LevelsNavKey
 import dev.stekl0.nonokt.feature.levels.impl.navigation.levelsEntry
+import org.koin.compose.koinInject
+import java.util.UUID
 
 @Composable
 public fun NonoktApp(modifier: Modifier = Modifier) {
     val navigationState = rememberNavigationState(startKey = LevelsNavKey)
     val navigator = rememberNavigator(state = navigationState)
+    val levelPackSource = koinInject<LevelPackSource>()
     val entryProvider =
-        remember(navigator) {
+        remember(navigator, levelPackSource) {
             entryProvider {
-                levelsEntry()
+                levelsEntry(
+                    onLevelClick = { packId, levelIndex ->
+                        navigator.navigateToGameLevel(
+                            packId = packId,
+                            levelIndex = levelIndex,
+                        )
+                    },
+                )
+                gameEntry(
+                    resolveLevels = levelPackSource::loadLevels,
+                    onBackClick = navigator::goBack,
+                    onLevelsClick = navigator::goBack,
+                    onRestartLevelClick = { packId, levelIndex ->
+                        navigator.restartGameLevel(
+                            packId = packId,
+                            levelIndex = levelIndex,
+                        )
+                    },
+                    onNextLevelClick = { packId, levelIndex ->
+                        navigator.goBack()
+                        navigator.navigateToGameLevel(
+                            packId = packId,
+                            levelIndex = levelIndex,
+                        )
+                    },
+                )
             }
         }
 
@@ -34,5 +66,31 @@ public fun NonoktApp(modifier: Modifier = Modifier) {
                 rememberViewModelStoreNavEntryDecorator(),
             ),
         entryProvider = entryProvider,
+    )
+}
+
+private fun Navigator.restartGameLevel(
+    packId: String,
+    levelIndex: Int,
+) {
+    goBack()
+    navigateToGameLevel(
+        packId = packId,
+        levelIndex = levelIndex,
+        instanceId = UUID.randomUUID().toString(),
+    )
+}
+
+private fun Navigator.navigateToGameLevel(
+    packId: String,
+    levelIndex: Int,
+    instanceId: String = "",
+) {
+    navigate(
+        GameNavKey(
+            packId = packId,
+            levelIndex = levelIndex,
+            instanceId = instanceId,
+        ),
     )
 }

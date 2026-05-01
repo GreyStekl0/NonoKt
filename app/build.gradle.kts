@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "dev.stekl0.nonokt"
         versionCode = 1
-        versionName = "1.0.0" // X.Y.Z; X = Major, Y = minor, Z = Patch level
+        versionName = "0.0.1" // X.Y.Z; X = Major, Y = minor, Z = Patch level
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -22,6 +22,7 @@ android {
         }
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -33,7 +34,7 @@ android {
 dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(projects.core.navigation)
-    implementation(projects.feature.levels.api)
+    implementation(projects.feature.game.impl)
     implementation(projects.feature.levels.impl)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.navigation3.ui)
@@ -41,5 +42,7 @@ dependencies {
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

@@ -2,6 +2,7 @@ package dev.stekl0.nonokt.feature.levels.impl.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -18,11 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.stekl0.nonokt.feature.levels.impl.Level
+import dev.stekl0.nonokt.core.ui.draw.drawLevelSilhouette
+import dev.stekl0.nonokt.feature.game.impl.GameLevel
 import kotlinx.collections.immutable.ImmutableList
 
 private val LevelGridSpacing: Dp = 12.dp
@@ -36,7 +37,9 @@ private object LevelsGridLayout {
 
 @Composable
 internal fun LevelsGrid(
-    levels: ImmutableList<Level>,
+    packId: String,
+    levels: ImmutableList<GameLevel>,
+    onLevelClick: (String, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
@@ -46,22 +49,35 @@ internal fun LevelsGrid(
         horizontalArrangement = Arrangement.spacedBy(LevelGridSpacing),
         verticalArrangement = Arrangement.spacedBy(LevelGridSpacing),
     ) {
-        items(
+        itemsIndexed(
             items = levels,
-            key = Level::id,
-        ) { level ->
-            LevelTile(level = level)
+            key = { _, level -> level.id },
+        ) { index, level ->
+            LevelTile(
+                level = level,
+                onClick = {
+                    onLevelClick(
+                        packId,
+                        index,
+                    )
+                },
+            )
         }
     }
 }
 
 @Composable
 private fun LevelTile(
-    level: Level,
+    level: GameLevel,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     OutlinedCard(
-        modifier = modifier.aspectRatio(1f),
+        modifier =
+            modifier
+                .aspectRatio(1f)
+                .testTag("level:${level.id}")
+                .clickable(onClick = onClick),
         border =
             BorderStroke(
                 width = LevelTileBorderWidth,
@@ -89,37 +105,27 @@ private fun LevelTile(
 
 @Composable
 private fun LevelThumbnail(
-    level: Level,
+    level: GameLevel,
     modifier: Modifier = Modifier,
-    foregroundColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
-    Canvas(modifier = modifier) {
-        val rows = level.height
-        val columns = level.width
+    val foregroundColor = MaterialTheme.colorScheme.onSurface
 
-        val cellSize = minOf(size.width / columns, size.height / rows)
-        val boardWidth = columns * cellSize
-        val boardHeight = rows * cellSize
+    Canvas(modifier = modifier) {
+        val boardSize = level.size
+
+        val cellSize = minOf(size.width / boardSize, size.height / boardSize)
+        val boardDimension = boardSize * cellSize
         val boardOrigin =
             Offset(
-                x = (size.width - boardWidth) / 2f,
-                y = (size.height - boardHeight) / 2f,
+                x = (size.width - boardDimension) / 2f,
+                y = (size.height - boardDimension) / 2f,
             )
 
-        level.solution.forEachIndexed { rowIndex, row ->
-            row.forEachIndexed { columnIndex, cell ->
-                if (cell == '1') {
-                    drawRect(
-                        color = foregroundColor,
-                        topLeft =
-                            Offset(
-                                x = boardOrigin.x + (columnIndex * cellSize),
-                                y = boardOrigin.y + (rowIndex * cellSize),
-                            ),
-                        size = Size(width = cellSize, height = cellSize),
-                    )
-                }
-            }
-        }
+        drawLevelSilhouette(
+            solution = level.solution,
+            boardOrigin = boardOrigin,
+            cellSize = cellSize,
+            color = foregroundColor,
+        )
     }
 }
