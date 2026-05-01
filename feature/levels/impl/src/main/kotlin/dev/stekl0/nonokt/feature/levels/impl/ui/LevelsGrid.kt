@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
@@ -22,14 +24,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.stekl0.nonokt.core.designsystem.icon.QuestionMark
 import dev.stekl0.nonokt.core.ui.draw.drawLevelSilhouette
 import dev.stekl0.nonokt.feature.game.impl.GameLevel
+import dev.stekl0.nonokt.feature.levels.impl.levelCompletionId
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
 
 private val LevelGridSpacing: Dp = 12.dp
 private val LevelGridPadding: PaddingValues = PaddingValues(16.dp)
 private val LevelTileBorderWidth: Dp = 2.dp
 private val LevelTileContentPadding: Dp = 4.dp
+private val HiddenLevelIconSize: Dp = 36.dp
 
 private object LevelsGridLayout {
     const val COLUMN_COUNT: Int = 4
@@ -39,6 +45,7 @@ private object LevelsGridLayout {
 internal fun LevelsGrid(
     packId: String,
     levels: ImmutableList<GameLevel>,
+    completedLevelIds: ImmutableSet<String>,
     onLevelClick: (String, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -55,6 +62,11 @@ internal fun LevelsGrid(
         ) { index, level ->
             LevelTile(
                 level = level,
+                isCompleted =
+                    levelCompletionId(
+                        packId = packId,
+                        levelId = level.id,
+                    ) in completedLevelIds,
                 onClick = {
                     onLevelClick(
                         packId,
@@ -69,9 +81,17 @@ internal fun LevelsGrid(
 @Composable
 private fun LevelTile(
     level: GameLevel,
+    isCompleted: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val borderColor =
+        if (isCompleted) {
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.72f)
+        } else {
+            MaterialTheme.colorScheme.outlineVariant
+        }
+
     OutlinedCard(
         modifier =
             modifier
@@ -81,7 +101,7 @@ private fun LevelTile(
         border =
             BorderStroke(
                 width = LevelTileBorderWidth,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.72f),
+                color = borderColor,
             ),
         colors =
             CardDefaults.outlinedCardColors(
@@ -95,12 +115,26 @@ private fun LevelTile(
                     .padding(LevelTileContentPadding),
             contentAlignment = Alignment.Center,
         ) {
-            LevelThumbnail(
-                level = level,
-                modifier = Modifier.fillMaxSize(),
-            )
+            if (isCompleted) {
+                LevelThumbnail(
+                    level = level,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            } else {
+                HiddenLevelMark()
+            }
         }
     }
+}
+
+@Composable
+private fun HiddenLevelMark() {
+    Icon(
+        imageVector = QuestionMark,
+        contentDescription = null,
+        modifier = Modifier.size(HiddenLevelIconSize),
+        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
 }
 
 @Composable

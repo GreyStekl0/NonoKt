@@ -12,6 +12,7 @@ public fun EntryProviderScope<NavKey>.gameEntry(
     onLevelsClick: () -> Unit,
     onRestartLevelClick: (String, Int) -> Unit,
     onNextLevelClick: (String, Int) -> Unit,
+    onLevelComplete: (String, String) -> Unit,
 ) {
     entry<GameNavKey> { key ->
         val levelPack = resolveLevels(key.packId)
@@ -47,6 +48,12 @@ public fun EntryProviderScope<NavKey>.gameEntry(
                         )
                     }
                 },
+            onLevelComplete = {
+                onLevelComplete(
+                    key.packId,
+                    level.id,
+                )
+            },
         )
     }
 }

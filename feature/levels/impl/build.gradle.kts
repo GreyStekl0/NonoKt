@@ -12,6 +12,7 @@ android {
 dependencies {
     implementation(projects.feature.game.impl)
     implementation(projects.core.ui)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)

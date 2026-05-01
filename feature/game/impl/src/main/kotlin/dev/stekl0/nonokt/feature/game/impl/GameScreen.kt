@@ -31,7 +31,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -62,10 +67,19 @@ internal fun GameScreen(
     onLevelsClick: () -> Unit,
     onRestartClick: () -> Unit,
     onNextLevelClick: (() -> Unit)?,
+    onLevelComplete: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: GameViewModel = koinViewModel(parameters = { parametersOf(level) }),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val currentOnLevelComplete by rememberUpdatedState(onLevelComplete)
+    var isCompletionReported by rememberSaveable(state.level.id) { mutableStateOf(false) }
+    LaunchedEffect(state.isSolved, state.level.id) {
+        if (state.isSolved && !isCompletionReported) {
+            isCompletionReported = true
+            currentOnLevelComplete()
+        }
+    }
 
     GameContent(
         state = state,

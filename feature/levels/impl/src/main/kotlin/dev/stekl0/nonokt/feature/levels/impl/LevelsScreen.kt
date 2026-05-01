@@ -32,6 +32,7 @@ import dev.stekl0.nonokt.core.designsystem.icon.GridOn
 import dev.stekl0.nonokt.feature.game.impl.GameLevel
 import dev.stekl0.nonokt.feature.levels.impl.ui.LevelsGrid
 import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableMap
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -95,6 +96,7 @@ private fun LevelsContent(
             LevelsGrid(
                 packId = state.selectedTab.packId,
                 levels = state.levels,
+                completedLevelIds = state.completedLevelIds,
                 onLevelClick = onLevelClick,
                 modifier =
                     Modifier
@@ -313,6 +315,13 @@ private fun LevelsScreenSmallPreview() {
             LevelsState(
                 selectedTab = Tab.SMALL,
                 levelPacks = previewLevelPacks(),
+                completedLevelIds =
+                    persistentSetOf(
+                        levelCompletionId(
+                            packId = Tab.SMALL.packId,
+                            levelId = PreviewSmallLevels.first().id,
+                        ),
+                    ),
             ),
         onTabSelect = {},
         onLevelClick = { _, _ -> },
@@ -327,6 +336,13 @@ private fun LevelsScreenMediumPreview() {
             LevelsState(
                 selectedTab = Tab.MEDIUM,
                 levelPacks = previewLevelPacks(),
+                completedLevelIds =
+                    persistentSetOf(
+                        levelCompletionId(
+                            packId = Tab.MEDIUM.packId,
+                            levelId = PreviewMediumLevels.first().id,
+                        ),
+                    ),
             ),
         onTabSelect = {},
         onLevelClick = { _, _ -> },

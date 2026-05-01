@@ -4,8 +4,10 @@ import androidx.compose.runtime.Immutable
 import dev.stekl0.nonokt.feature.game.impl.GameLevel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -36,6 +38,7 @@ internal enum class Tab {
 internal data class LevelsState(
     val selectedTab: Tab = Tab.SMALL,
     val levelPacks: ImmutableMap<String, LevelPack> = persistentMapOf(),
+    val completedLevelIds: ImmutableSet<String> = persistentSetOf(),
 ) {
     val levels: ImmutableList<GameLevel>
         get() = levelPacks[selectedTab.packId]?.levels ?: persistentListOf()
