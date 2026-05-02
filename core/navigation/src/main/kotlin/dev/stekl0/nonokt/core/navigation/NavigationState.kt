@@ -11,13 +11,16 @@ import androidx.navigation3.runtime.rememberNavBackStack
  */
 public class NavigationState internal constructor(
     public val startKey: NavKey,
-    public val backStack: NavBackStack<NavKey>,
+    internal val mutableBackStack: NavBackStack<NavKey>,
 ) {
+    public val backStack: List<NavKey>
+        get() = mutableBackStack
+
     public val currentKey: NavKey
-        get() = backStack.last()
+        get() = mutableBackStack.lastOrNull() ?: startKey
 
     public val canGoBack: Boolean
-        get() = backStack.size > 1
+        get() = mutableBackStack.size > 1
 }
 
 /**
@@ -29,7 +32,7 @@ public fun rememberNavigationState(startKey: NavKey): NavigationState {
     return remember(startKey, backStack) {
         NavigationState(
             startKey = startKey,
-            backStack = backStack,
+            mutableBackStack = backStack,
         )
     }
 }

@@ -2,6 +2,11 @@
     <string name="feature_levels_tab_small">Small</string>
     <string name="feature_levels_tab_medium">Medium</string>
     <string name="feature_levels_tab_large">Large</string>
+    <string name="feature_levels_loading_title">Loading levels</string>
+    <string name="feature_levels_loading_description">Preparing level packs</string>
+    <string name="feature_levels_error_title">Levels unavailable</string>
+    <string name="feature_levels_error_description">Level packs could not be loaded. Try again or restart the app.</string>
+    <string name="feature_levels_retry">Retry</string>
     <string name="feature_levels_empty_title">No levels yet</string>
     <string name="feature_levels_empty_description">Add a level pack for this category and the grid will appear here.</string>
 </resources>

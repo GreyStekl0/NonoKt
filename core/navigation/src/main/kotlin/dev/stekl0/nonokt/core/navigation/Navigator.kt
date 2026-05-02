@@ -13,15 +13,17 @@ public class Navigator(
      * @param key - the navigation key to navigate to.
      */
     public fun navigate(key: NavKey) {
-        state.backStack.remove(key) // singleTop-like
-        state.backStack.add(key)
+        if (state.mutableBackStack.lastOrNull() == key) return
+
+        state.mutableBackStack.remove(key) // singleTop-like
+        state.mutableBackStack.add(key)
     }
 
     /**
      * Go back to the previous navigation key.
      */
     public fun goBack() {
-        if (state.canGoBack) state.backStack.removeLastOrNull()
+        if (state.canGoBack) state.mutableBackStack.removeLastOrNull()
     }
 }
 

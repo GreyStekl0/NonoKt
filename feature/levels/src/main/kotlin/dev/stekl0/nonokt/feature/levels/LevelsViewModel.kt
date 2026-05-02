@@ -8,6 +8,7 @@ import dev.stekl0.nonokt.core.data.LevelRepository
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.KoinViewModel
+import timber.log.Timber
 
 @KoinViewModel
 internal class LevelsViewModel(
@@ -26,16 +28,19 @@ internal class LevelsViewModel(
 ) : ViewModel() {
     private val levelPacks: MutableStateFlow<ImmutableMap<String, LevelPack>> = MutableStateFlow(persistentMapOf())
     private val selectedTab = MutableStateFlow(defaultTab)
+    private val loadState = MutableStateFlow<LevelsLoadState>(LevelsLoadState.Loading)
     val state: StateFlow<LevelsState> =
         combine(
             selectedTab,
             levelPacks,
             levelCompletionRepository.completedLevelIds,
-        ) { selectedTab, levelPacks, completedLevelIds ->
+            loadState,
+        ) { selectedTab, levelPacks, completedLevelIds, loadState ->
             LevelsState(
                 selectedTab = selectedTab,
                 levelPacks = levelPacks,
                 completedLevelIds = completedLevelIds,
+                loadState = loadState,
             )
         }.stateIn(
             scope = viewModelScope,
@@ -45,15 +50,39 @@ internal class LevelsViewModel(
                     selectedTab = defaultTab,
                     levelPacks = persistentMapOf(),
                     completedLevelIds = persistentSetOf(),
+                    loadState = LevelsLoadState.Loading,
                 ),
         )
 
     init {
+        loadLevelPacks(force = true)
+    }
+
+    fun retryLoadLevelPacks() {
+        if (loadState.value !is LevelsLoadState.Error) return
+        loadLevelPacks()
+    }
+
+    private fun loadLevelPacks(force: Boolean = false) {
+        if (!force && loadState.value == LevelsLoadState.Loading) return
+
+        loadState.value = LevelsLoadState.Loading
         viewModelScope.launch {
-            levelPacks.value =
+            runCatching {
                 withContext(Dispatchers.IO) {
                     levelRepository.loadLevelPacks()
                 }
+            }.onSuccess { packs ->
+                levelPacks.value = packs
+                loadState.value = LevelsLoadState.Content
+            }.onFailure { throwable ->
+                if (throwable is CancellationException) throw throwable
+                Timber.e(throwable, "Failed to load level packs.")
+                loadState.value =
+                    LevelsLoadState.Error(
+                        message = throwable.message.orEmpty(),
+                    )
+            }
         }
     }
 

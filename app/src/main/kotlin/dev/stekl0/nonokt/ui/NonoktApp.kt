@@ -28,10 +28,10 @@ public fun NonoktApp(modifier: Modifier = Modifier) {
         remember(navigator, levelRepository) {
             entryProvider {
                 levelsEntry(
-                    onLevelClick = { packId, levelIndex ->
+                    onLevelClick = { packId, levelId ->
                         navigator.navigateToGameLevel(
                             packId = packId,
-                            levelIndex = levelIndex,
+                            levelId = levelId,
                         )
                     },
                 )
@@ -39,17 +39,17 @@ public fun NonoktApp(modifier: Modifier = Modifier) {
                     resolveLevels = levelRepository::loadLevels,
                     onBackClick = navigator::goBack,
                     onLevelsClick = navigator::goBack,
-                    onRestartLevelClick = { packId, levelIndex ->
+                    onRestartLevelClick = { packId, levelId ->
                         navigator.restartGameLevel(
                             packId = packId,
-                            levelIndex = levelIndex,
+                            levelId = levelId,
                         )
                     },
-                    onNextLevelClick = { packId, levelIndex ->
+                    onNextLevelClick = { packId, levelId ->
                         navigator.goBack()
                         navigator.navigateToGameLevel(
                             packId = packId,
-                            levelIndex = levelIndex,
+                            levelId = levelId,
                         )
                     },
                 )
@@ -71,25 +71,25 @@ public fun NonoktApp(modifier: Modifier = Modifier) {
 
 private fun Navigator.restartGameLevel(
     packId: String,
-    levelIndex: Int,
+    levelId: String,
 ) {
     goBack()
     navigateToGameLevel(
         packId = packId,
-        levelIndex = levelIndex,
+        levelId = levelId,
         instanceId = UUID.randomUUID().toString(),
     )
 }
 
 private fun Navigator.navigateToGameLevel(
     packId: String,
-    levelIndex: Int,
+    levelId: String,
     instanceId: String = "",
 ) {
     navigate(
         GameNavKey(
             packId = packId,
-            levelIndex = levelIndex,
+            levelId = levelId,
             instanceId = instanceId,
         ),
     )

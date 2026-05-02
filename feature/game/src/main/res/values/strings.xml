@@ -12,6 +12,8 @@
     <string name="feature_game_progress_solved">Solved</string>
     <string name="feature_game_progress_failed">Failed</string>
     <string name="feature_game_completion_title">Level completed</string>
+    <string name="feature_game_completion_saving">Saving progress...</string>
+    <string name="feature_game_completion_save_failed">Progress could not be saved. Try again from the levels screen.</string>
     <string name="feature_game_completion_levels">Levels</string>
     <string name="feature_game_completion_next">Next level</string>
     <string name="feature_game_failure_title">Level failed</string>

@@ -19,11 +19,22 @@ internal enum class Tab(
     LARGE(LevelPackIds.LARGE),
 }
 
+internal sealed interface LevelsLoadState {
+    data object Loading : LevelsLoadState
+
+    data object Content : LevelsLoadState
+
+    data class Error(
+        val message: String,
+    ) : LevelsLoadState
+}
+
 @Immutable
 internal data class LevelsState(
     val selectedTab: Tab = Tab.SMALL,
     val levelPacks: ImmutableMap<String, LevelPack> = persistentMapOf(),
     val completedLevelIds: ImmutableSet<String> = persistentSetOf(),
+    val loadState: LevelsLoadState = LevelsLoadState.Loading,
 ) {
     val levels: ImmutableList<GameLevel>
         get() = levelPacks[selectedTab.packId]?.levels ?: persistentListOf()

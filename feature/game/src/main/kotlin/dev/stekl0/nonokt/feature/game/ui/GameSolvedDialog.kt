@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.stekl0.nonokt.core.model.GameLevel
 import dev.stekl0.nonokt.core.ui.draw.drawLevelSilhouette
+import dev.stekl0.nonokt.feature.game.CompletionPersistenceState
 import dev.stekl0.nonokt.feature.game.R
 
 private val DialogMinHeight = 320.dp
@@ -28,6 +29,8 @@ private val PreviewPadding = 24.dp
 @Composable
 internal fun GameSolvedDialog(
     level: GameLevel,
+    actionsEnabled: Boolean,
+    completionPersistenceState: CompletionPersistenceState,
     onLevelsClick: () -> Unit,
     onNextLevelClick: (() -> Unit)?,
 ) {
@@ -38,11 +41,39 @@ internal fun GameSolvedDialog(
     ) {
         SolvedDialogPreview(level = level)
 
+        CompletionPersistenceMessage(completionPersistenceState = completionPersistenceState)
+
         SolvedDialogActions(
+            actionsEnabled = actionsEnabled,
             onLevelsClick = onLevelsClick,
             onNextLevelClick = onNextLevelClick,
         )
     }
+}
+
+@Composable
+private fun CompletionPersistenceMessage(completionPersistenceState: CompletionPersistenceState) {
+    val (message, color) =
+        when (completionPersistenceState) {
+            CompletionPersistenceState.SAVING -> {
+                R.string.feature_game_completion_saving to MaterialTheme.colorScheme.onSurfaceVariant
+            }
+
+            CompletionPersistenceState.FAILED -> {
+                R.string.feature_game_completion_save_failed to MaterialTheme.colorScheme.error
+            }
+
+            CompletionPersistenceState.NOT_STARTED,
+            CompletionPersistenceState.SAVED,
+            -> {
+                return
+            }
+        }
+    Text(
+        text = stringResource(message),
+        style = MaterialTheme.typography.bodyMedium,
+        color = color,
+    )
 }
 
 @Composable
@@ -70,6 +101,7 @@ private fun SolvedDialogPreview(
 
 @Composable
 private fun SolvedDialogActions(
+    actionsEnabled: Boolean,
     onLevelsClick: () -> Unit,
     onNextLevelClick: (() -> Unit)?,
 ) {
@@ -80,12 +112,14 @@ private fun SolvedDialogActions(
         ) {
             OutlinedButton(
                 onClick = onLevelsClick,
+                enabled = actionsEnabled,
                 modifier = Modifier.weight(1f).testTag("game_solved_levels"),
             ) {
                 Text(text = stringResource(R.string.feature_game_completion_levels))
             }
             Button(
                 onClick = onNextLevelClick,
+                enabled = actionsEnabled,
                 modifier = Modifier.weight(1f).testTag("game_solved_next"),
             ) {
                 Text(text = stringResource(R.string.feature_game_completion_next))
@@ -94,6 +128,7 @@ private fun SolvedDialogActions(
     } else {
         Button(
             onClick = onLevelsClick,
+            enabled = actionsEnabled,
             modifier = Modifier.fillMaxWidth().testTag("game_solved_levels"),
         ) {
             Text(text = stringResource(R.string.feature_game_completion_levels))

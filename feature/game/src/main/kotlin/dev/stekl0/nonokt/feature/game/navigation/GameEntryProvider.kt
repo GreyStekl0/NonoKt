@@ -10,13 +10,18 @@ public fun EntryProviderScope<NavKey>.gameEntry(
     resolveLevels: (String) -> List<GameLevel>?,
     onBackClick: () -> Unit,
     onLevelsClick: () -> Unit,
-    onRestartLevelClick: (String, Int) -> Unit,
-    onNextLevelClick: (String, Int) -> Unit,
+    onRestartLevelClick: (String, String) -> Unit,
+    onNextLevelClick: (String, String) -> Unit,
 ) {
     entry<GameNavKey> { key ->
         val levelPack = resolveLevels(key.packId)
-        val level = levelPack?.getOrNull(key.levelIndex)
-        if (level == null) {
+        val levelIndex =
+            key.levelId
+                ?.let { levelId -> levelPack?.indexOfFirst { level -> level.id == levelId } }
+                ?: key.legacyLevelIndex
+                ?: -1
+        val level = levelPack?.getOrNull(levelIndex)
+        if (levelPack == null || level == null) {
             LaunchedEffect(key) {
                 onLevelsClick()
             }
@@ -24,8 +29,9 @@ public fun EntryProviderScope<NavKey>.gameEntry(
         }
 
         val nextLevelIndex =
-            (key.levelIndex + 1)
+            (levelIndex + 1)
                 .takeIf { index -> index < levelPack.size }
+        val nextLevelId = nextLevelIndex?.let { index -> levelPack[index].id }
         GameScreen(
             packId = key.packId,
             level = level,
@@ -34,17 +40,17 @@ public fun EntryProviderScope<NavKey>.gameEntry(
             onRestartClick = {
                 onRestartLevelClick(
                     key.packId,
-                    key.levelIndex,
+                    level.id,
                 )
             },
             onNextLevelClick =
-                if (nextLevelIndex == null) {
+                if (nextLevelId == null) {
                     null
                 } else {
                     {
                         onNextLevelClick(
                             key.packId,
-                            nextLevelIndex,
+                            nextLevelId,
                         )
                     }
                 },

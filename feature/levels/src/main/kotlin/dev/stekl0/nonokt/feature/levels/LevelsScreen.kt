@@ -1,30 +1,22 @@
 package dev.stekl0.nonokt.feature.levels
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.stekl0.nonokt.core.data.LevelPack
 import dev.stekl0.nonokt.core.data.levelCompletionId
@@ -57,7 +49,7 @@ private val Tab.icon: ImageVector
 
 @Composable
 internal fun LevelsScreen(
-    onLevelClick: (String, Int) -> Unit,
+    onLevelClick: (String, String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LevelsViewModel = koinViewModel(),
 ) {
@@ -65,6 +57,7 @@ internal fun LevelsScreen(
     LevelsContent(
         state = state,
         onTabSelect = viewModel::onTabSelected,
+        onRetryClick = viewModel::retryLoadLevelPacks,
         onLevelClick = onLevelClick,
         modifier = modifier,
     )
@@ -74,7 +67,8 @@ internal fun LevelsScreen(
 private fun LevelsContent(
     state: LevelsState,
     onTabSelect: (Int) -> Unit,
-    onLevelClick: (String, Int) -> Unit,
+    onRetryClick: () -> Unit,
+    onLevelClick: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -86,26 +80,77 @@ private fun LevelsContent(
             )
         },
     ) { innerPadding ->
-        if (state.levels.isEmpty()) {
-            EmptyLevelsState(
-                tab = state.selectedTab,
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-            )
-        } else {
-            LevelsGrid(
-                packId = state.selectedTab.packId,
-                levels = state.levels,
-                completedLevelIds = state.completedLevelIds,
-                onLevelClick = onLevelClick,
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
+        LevelsBody(
+            state = state,
+            onRetryClick = onRetryClick,
+            onLevelClick = onLevelClick,
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+        )
+    }
+}
+
+@Composable
+private fun LevelsBody(
+    state: LevelsState,
+    onRetryClick: () -> Unit,
+    onLevelClick: (String, String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    when (state.loadState) {
+        LevelsLoadState.Loading -> {
+            LevelsMessageState(
+                icon = state.selectedTab.icon,
+                title = R.string.feature_levels_loading_title,
+                description = R.string.feature_levels_loading_description,
+                modifier = modifier,
             )
         }
+
+        is LevelsLoadState.Error -> {
+            LevelsMessageState(
+                icon = state.selectedTab.icon,
+                title = R.string.feature_levels_error_title,
+                description = R.string.feature_levels_error_description,
+                actionLabel = R.string.feature_levels_retry,
+                onActionClick = onRetryClick,
+                modifier = modifier,
+            )
+        }
+
+        LevelsLoadState.Content -> {
+            LoadedLevelsBody(
+                state = state,
+                onLevelClick = onLevelClick,
+                modifier = modifier,
+            )
+        }
+    }
+}
+
+@Composable
+private fun LoadedLevelsBody(
+    state: LevelsState,
+    onLevelClick: (String, String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (state.levels.isEmpty()) {
+        LevelsMessageState(
+            icon = state.selectedTab.icon,
+            title = R.string.feature_levels_empty_title,
+            description = R.string.feature_levels_empty_description,
+            modifier = modifier,
+        )
+    } else {
+        LevelsGrid(
+            packId = state.selectedTab.packId,
+            levels = state.levels,
+            completedLevelIds = state.completedLevelIds,
+            onLevelClick = onLevelClick,
+            modifier = modifier,
+        )
     }
 }
 
@@ -139,45 +184,6 @@ private fun LevelsTabRow(
                     )
                 },
             )
-        }
-    }
-}
-
-@Composable
-private fun EmptyLevelsState(
-    tab: Tab,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier.padding(24.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Surface(
-            shape = MaterialTheme.shapes.extraLarge,
-            tonalElevation = 2.dp,
-        ) {
-            Column(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Icon(
-                    imageVector = tab.icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                    text = stringResource(R.string.feature_levels_empty_title),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                Text(
-                    text = stringResource(R.string.feature_levels_empty_description),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
         }
     }
 }
@@ -317,6 +323,7 @@ private fun LevelsScreenSmallPreview() {
             LevelsState(
                 selectedTab = Tab.SMALL,
                 levelPacks = previewLevelPacks(),
+                loadState = LevelsLoadState.Content,
                 completedLevelIds =
                     persistentSetOf(
                         levelCompletionId(
@@ -326,6 +333,7 @@ private fun LevelsScreenSmallPreview() {
                     ),
             ),
         onTabSelect = {},
+        onRetryClick = {},
         onLevelClick = { _, _ -> },
     )
 }
@@ -338,6 +346,7 @@ private fun LevelsScreenMediumPreview() {
             LevelsState(
                 selectedTab = Tab.MEDIUM,
                 levelPacks = previewLevelPacks(),
+                loadState = LevelsLoadState.Content,
                 completedLevelIds =
                     persistentSetOf(
                         levelCompletionId(
@@ -347,6 +356,7 @@ private fun LevelsScreenMediumPreview() {
                     ),
             ),
         onTabSelect = {},
+        onRetryClick = {},
         onLevelClick = { _, _ -> },
     )
 }
@@ -359,8 +369,10 @@ private fun LevelsScreenLargeEmptyPreview() {
             LevelsState(
                 selectedTab = Tab.LARGE,
                 levelPacks = previewLevelPacks(),
+                loadState = LevelsLoadState.Content,
             ),
         onTabSelect = {},
+        onRetryClick = {},
         onLevelClick = { _, _ -> },
     )
 }

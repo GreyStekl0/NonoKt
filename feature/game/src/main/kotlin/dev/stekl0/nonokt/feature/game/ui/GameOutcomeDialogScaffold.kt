@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,6 +22,7 @@ import androidx.compose.ui.window.DialogProperties
 internal val GameOutcomeDialogPadding: Dp = 20.dp
 internal val GameOutcomeDialogSpacing: Dp = 16.dp
 internal val GameOutcomeDialogActionSpacing: Dp = 12.dp
+internal val GameOutcomeDialogMaxHeight: Dp = 560.dp
 
 @Composable
 internal fun GameOutcomeDialogScaffold(
@@ -44,10 +47,13 @@ internal fun GameOutcomeDialogScaffold(
                 Modifier
                     .testTag(testTag)
                     .fillMaxWidth()
-                    .heightIn(min = minHeight),
+                    .heightIn(min = minHeight, max = GameOutcomeDialogMaxHeight),
         ) {
             Column(
-                modifier = Modifier.padding(GameOutcomeDialogPadding),
+                modifier =
+                    Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(GameOutcomeDialogPadding),
                 verticalArrangement = Arrangement.spacedBy(GameOutcomeDialogSpacing),
             ) {
                 Text(

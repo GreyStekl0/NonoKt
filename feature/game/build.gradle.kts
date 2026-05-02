@@ -15,6 +15,4 @@ dependencies {
     implementation(projects.core.ui)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.timber)
-
-    testImplementation(libs.junit)
 }
