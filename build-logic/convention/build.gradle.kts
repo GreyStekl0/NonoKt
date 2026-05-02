@@ -65,12 +65,12 @@ gradlePlugin {
                     .pluginId
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
-        register("androidFeatureImpl") {
+        register("androidFeature") {
             id =
-                libs.plugins.nonokt.android.feature.impl
+                libs.plugins.nonokt.android.feature
                     .get()
                     .pluginId
-            implementationClass = "AndroidFeatureImplConventionPlugin"
+            implementationClass = "AndroidFeatureConventionPlugin"
         }
         register("jvmLibrary") {
             id =

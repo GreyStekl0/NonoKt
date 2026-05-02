@@ -33,7 +33,7 @@ internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
         }
     }
 
-    configureKotlin<KotlinAndroidProjectExtension>()
+    configureKotlin<KotlinAndroidProjectExtension>(enableCoroutinesOptIn = true)
 }
 
 /**
@@ -45,13 +45,13 @@ internal fun Project.configureKotlinJvm() {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    configureKotlin<KotlinJvmProjectExtension>()
+    configureKotlin<KotlinJvmProjectExtension>(enableCoroutinesOptIn = false)
 }
 
 /**
  * Configure base Kotlin options
  */
-private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin() =
+private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin(enableCoroutinesOptIn: Boolean) =
     configure<T> {
         // Force explicit declarations for the public API surface (visibility and types).
         explicitApi()
@@ -61,9 +61,11 @@ private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin() =
             else -> TODO("Unsupported project extension $this ${T::class}")
         }.apply {
             jvmTarget = JvmTarget.JVM_17
+            if (enableCoroutinesOptIn) {
+                // Enable experimental coroutines APIs, including Flow.
+                freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
+            }
             freeCompilerArgs.addAll(
-                // Enable experimental coroutines APIs, including Flow
-                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
                 // Enable explicit backing fields syntax (`field = ...`) for concise state encapsulation.
                 "-Xexplicit-backing-fields",
                 // Warn when non-Unit return values are ignored to catch accidental dropped results.

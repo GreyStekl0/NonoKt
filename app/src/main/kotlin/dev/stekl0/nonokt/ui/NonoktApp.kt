@@ -8,14 +8,14 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import dev.stekl0.nonokt.core.data.LevelRepository
 import dev.stekl0.nonokt.core.navigation.Navigator
 import dev.stekl0.nonokt.core.navigation.rememberNavigationState
 import dev.stekl0.nonokt.core.navigation.rememberNavigator
-import dev.stekl0.nonokt.feature.game.impl.navigation.GameNavKey
-import dev.stekl0.nonokt.feature.game.impl.navigation.gameEntry
-import dev.stekl0.nonokt.feature.levels.impl.LevelPackSource
-import dev.stekl0.nonokt.feature.levels.impl.navigation.LevelsNavKey
-import dev.stekl0.nonokt.feature.levels.impl.navigation.levelsEntry
+import dev.stekl0.nonokt.feature.game.navigation.GameNavKey
+import dev.stekl0.nonokt.feature.game.navigation.gameEntry
+import dev.stekl0.nonokt.feature.levels.navigation.LevelsNavKey
+import dev.stekl0.nonokt.feature.levels.navigation.levelsEntry
 import org.koin.compose.koinInject
 import java.util.UUID
 
@@ -23,9 +23,9 @@ import java.util.UUID
 public fun NonoktApp(modifier: Modifier = Modifier) {
     val navigationState = rememberNavigationState(startKey = LevelsNavKey)
     val navigator = rememberNavigator(state = navigationState)
-    val levelPackSource = koinInject<LevelPackSource>()
+    val levelRepository = koinInject<LevelRepository>()
     val entryProvider =
-        remember(navigator, levelPackSource) {
+        remember(navigator, levelRepository) {
             entryProvider {
                 levelsEntry(
                     onLevelClick = { packId, levelIndex ->
@@ -36,7 +36,7 @@ public fun NonoktApp(modifier: Modifier = Modifier) {
                     },
                 )
                 gameEntry(
-                    resolveLevels = levelPackSource::loadLevels,
+                    resolveLevels = levelRepository::loadLevels,
                     onBackClick = navigator::goBack,
                     onLevelsClick = navigator::goBack,
                     onRestartLevelClick = { packId, levelIndex ->

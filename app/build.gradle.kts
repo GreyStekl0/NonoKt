@@ -33,9 +33,11 @@ android {
 
 dependencies {
     implementation(libs.androidx.compose.material3)
+    implementation(projects.core.data)
+    implementation(projects.core.model)
     implementation(projects.core.navigation)
-    implementation(projects.feature.game.impl)
-    implementation(projects.feature.levels.impl)
+    implementation(projects.feature.game)
+    implementation(projects.feature.levels)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.timber)
