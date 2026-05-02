@@ -24,10 +24,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.stekl0.nonokt.core.data.levelCompletionId
 import dev.stekl0.nonokt.core.designsystem.icon.QuestionMark
 import dev.stekl0.nonokt.core.ui.draw.drawLevelSilhouette
 import dev.stekl0.nonokt.feature.game.impl.GameLevel
-import dev.stekl0.nonokt.feature.levels.impl.levelCompletionId
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 

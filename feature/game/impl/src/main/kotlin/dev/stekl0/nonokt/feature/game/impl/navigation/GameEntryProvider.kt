@@ -12,7 +12,6 @@ public fun EntryProviderScope<NavKey>.gameEntry(
     onLevelsClick: () -> Unit,
     onRestartLevelClick: (String, Int) -> Unit,
     onNextLevelClick: (String, Int) -> Unit,
-    onLevelComplete: (String, String) -> Unit,
 ) {
     entry<GameNavKey> { key ->
         val levelPack = resolveLevels(key.packId)
@@ -28,6 +27,7 @@ public fun EntryProviderScope<NavKey>.gameEntry(
             (key.levelIndex + 1)
                 .takeIf { index -> index < levelPack.size }
         GameScreen(
+            packId = key.packId,
             level = level,
             onBackClick = onBackClick,
             onLevelsClick = onLevelsClick,
@@ -48,12 +48,6 @@ public fun EntryProviderScope<NavKey>.gameEntry(
                         )
                     }
                 },
-            onLevelComplete = {
-                onLevelComplete(
-                    key.packId,
-                    level.id,
-                )
-            },
         )
     }
 }

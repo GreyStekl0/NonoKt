@@ -1,4 +1,4 @@
-package dev.stekl0.nonokt.feature.levels.impl
+package dev.stekl0.nonokt.core.data
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
@@ -28,7 +28,7 @@ public fun levelCompletionId(
 }
 
 @Single
-public class LevelCompletionStore(
+public class LevelCompletionRepository(
     private val appContext: Context,
 ) {
     public val completedLevelIds: Flow<ImmutableSet<String>> =

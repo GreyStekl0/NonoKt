@@ -10,8 +10,10 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.data)
     implementation(projects.core.ui)
     implementation(libs.kotlinx.collections.immutable)
+    implementation(libs.timber)
 
     testImplementation(libs.junit)
 }

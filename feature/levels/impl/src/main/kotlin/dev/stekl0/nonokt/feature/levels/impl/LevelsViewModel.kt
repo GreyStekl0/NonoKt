@@ -2,6 +2,7 @@ package dev.stekl0.nonokt.feature.levels.impl
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.stekl0.nonokt.core.data.LevelCompletionRepository
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,14 +15,14 @@ import org.koin.core.annotation.KoinViewModel
 @KoinViewModel
 internal class LevelsViewModel(
     levelPackSource: LevelPackSource,
-    levelCompletionStore: LevelCompletionStore,
+    levelCompletionRepository: LevelCompletionRepository,
 ) : ViewModel() {
     private val levelPacks = levelPackSource.loadLevelPacks()
     private val selectedTab = MutableStateFlow(Tab.SMALL)
     val state: StateFlow<LevelsState> =
         combine(
             selectedTab,
-            levelCompletionStore.completedLevelIds,
+            levelCompletionRepository.completedLevelIds,
         ) { selectedTab, completedLevelIds ->
             LevelsState(
                 selectedTab = selectedTab,
