@@ -5,8 +5,8 @@ import android.content.pm.ApplicationInfo
 import android.os.StrictMode
 import androidx.compose.runtime.Composer
 import androidx.compose.runtime.tooling.ComposeStackTraceMode
-import dev.stekl0.nonokt.feature.game.impl.di.GameModule
-import dev.stekl0.nonokt.feature.levels.impl.di.LevelsModule
+import dev.stekl0.nonokt.feature.game.di.GameModule
+import dev.stekl0.nonokt.feature.levels.di.LevelsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinApplication
 import org.koin.plugin.module.dsl.startKoin

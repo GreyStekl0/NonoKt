@@ -36,10 +36,11 @@ include(":app")
 include(":core:designsystem")
 include(":core:navigation")
 include(":core:data")
+include(":core:model")
 include(":core:ui")
 
-include(":feature:levels:impl")
-include(":feature:game:impl")
+include(":feature:levels")
+include(":feature:game")
 
 check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
     """

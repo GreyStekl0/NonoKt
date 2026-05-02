@@ -11,11 +11,11 @@ import androidx.navigation3.ui.NavDisplay
 import dev.stekl0.nonokt.core.navigation.Navigator
 import dev.stekl0.nonokt.core.navigation.rememberNavigationState
 import dev.stekl0.nonokt.core.navigation.rememberNavigator
-import dev.stekl0.nonokt.feature.game.impl.navigation.GameNavKey
-import dev.stekl0.nonokt.feature.game.impl.navigation.gameEntry
-import dev.stekl0.nonokt.feature.levels.impl.LevelPackSource
-import dev.stekl0.nonokt.feature.levels.impl.navigation.LevelsNavKey
-import dev.stekl0.nonokt.feature.levels.impl.navigation.levelsEntry
+import dev.stekl0.nonokt.feature.game.navigation.GameNavKey
+import dev.stekl0.nonokt.feature.game.navigation.gameEntry
+import dev.stekl0.nonokt.feature.levels.LevelPackSource
+import dev.stekl0.nonokt.feature.levels.navigation.LevelsNavKey
+import dev.stekl0.nonokt.feature.levels.navigation.levelsEntry
 import org.koin.compose.koinInject
 import java.util.UUID
 
