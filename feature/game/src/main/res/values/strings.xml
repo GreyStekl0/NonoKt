@@ -12,7 +12,7 @@
     <string name="feature_game_progress_solved">Solved</string>
     <string name="feature_game_progress_failed">Failed</string>
     <string name="feature_game_completion_title">Level completed</string>
-    <string name="feature_game_completion_levels">Level list</string>
+    <string name="feature_game_completion_levels">Levels</string>
     <string name="feature_game_completion_next">Next level</string>
     <string name="feature_game_failure_title">Level failed</string>
     <string name="feature_game_failure_description">You reached the maximum number of errors.</string>

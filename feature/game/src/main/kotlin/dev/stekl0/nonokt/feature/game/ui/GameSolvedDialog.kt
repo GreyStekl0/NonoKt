@@ -28,7 +28,6 @@ private val PreviewPadding = 24.dp
 @Composable
 internal fun GameSolvedDialog(
     level: GameLevel,
-    hasNextLevel: Boolean,
     onLevelsClick: () -> Unit,
     onNextLevelClick: (() -> Unit)?,
 ) {
@@ -40,7 +39,6 @@ internal fun GameSolvedDialog(
         SolvedDialogPreview(level = level)
 
         SolvedDialogActions(
-            hasNextLevel = hasNextLevel,
             onLevelsClick = onLevelsClick,
             onNextLevelClick = onNextLevelClick,
         )
@@ -72,11 +70,10 @@ private fun SolvedDialogPreview(
 
 @Composable
 private fun SolvedDialogActions(
-    hasNextLevel: Boolean,
     onLevelsClick: () -> Unit,
     onNextLevelClick: (() -> Unit)?,
 ) {
-    if (hasNextLevel && onNextLevelClick != null) {
+    if (onNextLevelClick != null) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(GameOutcomeDialogActionSpacing),

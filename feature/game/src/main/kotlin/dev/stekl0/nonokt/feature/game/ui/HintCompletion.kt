@@ -111,7 +111,11 @@ private fun clueCompletion(
 private fun alignClueCompletion(
     completion: ImmutableList<Boolean>,
     targetSize: Int,
-): ImmutableList<Boolean> = (List(targetSize - completion.size) { false } + completion).toPersistentList()
+): ImmutableList<Boolean> =
+    (
+        List((targetSize - completion.size).coerceAtLeast(0)) { false } +
+            completion
+    ).toPersistentList()
 
 internal fun GameState.buildHintCompletion(): HintCompletion =
     calculateHintCompletion(

@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.stekl0.nonokt.core.data.LevelPack
 import dev.stekl0.nonokt.core.data.levelCompletionId
 import dev.stekl0.nonokt.core.designsystem.icon.BorderAll
 import dev.stekl0.nonokt.core.designsystem.icon.CropSquare
@@ -344,6 +345,20 @@ private fun LevelsScreenMediumPreview() {
                             levelId = PreviewMediumLevels.first().id,
                         ),
                     ),
+            ),
+        onTabSelect = {},
+        onLevelClick = { _, _ -> },
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun LevelsScreenLargeEmptyPreview() {
+    LevelsContent(
+        state =
+            LevelsState(
+                selectedTab = Tab.LARGE,
+                levelPacks = previewLevelPacks(),
             ),
         onTabSelect = {},
         onLevelClick = { _, _ -> },

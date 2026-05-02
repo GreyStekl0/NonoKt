@@ -33,6 +33,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.compose.material3)
+    implementation(projects.core.data)
     implementation(projects.core.model)
     implementation(projects.core.navigation)
     implementation(projects.feature.game)

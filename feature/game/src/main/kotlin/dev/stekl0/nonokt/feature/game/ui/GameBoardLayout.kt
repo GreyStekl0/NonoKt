@@ -18,6 +18,16 @@ internal fun calculateBoardLayout(
     maxRowHintCount: Int,
     maxColumnHintCount: Int,
 ): GameBoardLayout {
+    require(maxWidth.value > 0f && maxHeight.value > 0f) {
+        "Board layout constraints must be positive."
+    }
+    require(boardSize > 0) {
+        "Board size must be positive."
+    }
+    require(maxRowHintCount >= 0 && maxColumnHintCount >= 0) {
+        "Board hint counts must not be negative."
+    }
+
     val totalColumns = maxRowHintCount + boardSize
     val totalRows = maxColumnHintCount + boardSize
     val cellSize = minOf(maxWidth / totalColumns, maxHeight / totalRows)

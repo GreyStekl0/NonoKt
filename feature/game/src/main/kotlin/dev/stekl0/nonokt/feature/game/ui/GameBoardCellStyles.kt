@@ -11,7 +11,7 @@ internal val ThickGridStroke: Dp = 1.75.dp
 internal fun paddedHintValues(
     values: List<Int>,
     targetSize: Int,
-): ImmutableList<Int?> = (List(targetSize - values.size) { null } + values).toPersistentList()
+): ImmutableList<Int?> = (List((targetSize - values.size).coerceAtLeast(0)) { null } + values).toPersistentList()
 
 internal fun columnHintCellStrokes(
     hintRowIndex: Int,

@@ -169,7 +169,6 @@ private fun GameOutcomeDialog(
         state.isSolved -> {
             GameSolvedDialog(
                 level = state.level,
-                hasNextLevel = onNextLevelClick != null,
                 onLevelsClick = onLevelsClick,
                 onNextLevelClick = onNextLevelClick,
             )

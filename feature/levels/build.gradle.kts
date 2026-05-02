@@ -14,6 +14,5 @@ dependencies {
     implementation(projects.core.model)
     implementation(projects.core.ui)
     implementation(libs.kotlinx.collections.immutable)
-    implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)
 }

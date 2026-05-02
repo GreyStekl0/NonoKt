@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dev.stekl0.nonokt.core.data.LevelCompletionRepository
 import dev.stekl0.nonokt.core.data.levelCompletionId
 import dev.stekl0.nonokt.core.model.GameLevel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,9 +17,14 @@ import kotlinx.coroutines.launch
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.annotation.KoinViewModel
 import timber.log.Timber
+import java.io.IOException
 import kotlin.time.Duration.Companion.seconds
 
-private val CompletionRetryDelay = 2.seconds
+private object CompletionPersistencePolicy {
+    const val MAX_ATTEMPTS: Int = 5
+
+    fun retryDelay() = 2.seconds
+}
 
 @KoinViewModel
 internal class GameViewModel(
@@ -70,18 +76,24 @@ internal class GameViewModel(
 
         completionJob =
             viewModelScope.launch {
-                while (isActive) {
-                    runCatching {
+                var attempt = 1
+                while (isActive && attempt <= CompletionPersistencePolicy.MAX_ATTEMPTS) {
+                    try {
                         levelCompletionRepository.markCompleted(
                             packId = packId,
                             levelId = state.level.id,
                         )
-                    }.onSuccess {
                         persistedCompletionId = completionId
                         return@launch
-                    }.onFailure { throwable ->
+                    } catch (throwable: CancellationException) {
+                        throw throwable
+                    } catch (throwable: IOException) {
                         Timber.e(throwable, "Failed to persist level completion: %s", completionId)
-                        delay(CompletionRetryDelay)
+                        if (attempt == CompletionPersistencePolicy.MAX_ATTEMPTS) {
+                            return@launch
+                        }
+                        attempt += 1
+                        delay(CompletionPersistencePolicy.retryDelay())
                     }
                 }
             }

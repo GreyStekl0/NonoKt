@@ -195,8 +195,8 @@ internal data class GameState(
                     }.toPersistentList(),
                 rowHints = rowHints,
                 columnHints = columnHints,
-                maxRowHintCount = rowHints.maxOf(LineHint::size),
-                maxColumnHintCount = columnHints.maxOf(LineHint::size),
+                maxRowHintCount = rowHints.maxOfOrNull(LineHint::size) ?: 0,
+                maxColumnHintCount = columnHints.maxOfOrNull(LineHint::size) ?: 0,
                 requiredFilledCellCount = rowHints.sumOf { hint -> hint.values.sum() },
             )
         }

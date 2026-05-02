@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
+import timber.log.Timber
 import java.io.IOException
 
 private val Context.levelCompletionDataStore by preferencesDataStore(name = "level_completion")
@@ -21,6 +22,9 @@ public fun levelCompletionId(
     packId: String,
     levelId: String,
 ): String {
+    require(packId.isNotBlank() && levelId.isNotBlank()) {
+        "Level completion packId and levelId must not be blank."
+    }
     require('/' !in packId && '/' !in levelId) {
         "Level completion IDs must not contain '/'."
     }
@@ -35,6 +39,7 @@ public class LevelCompletionRepository(
         appContext.levelCompletionDataStore.data
             .catch { exception ->
                 if (exception is IOException) {
+                    Timber.e(exception, "Failed to read level completion data.")
                     emit(emptyPreferences())
                 } else {
                     throw exception

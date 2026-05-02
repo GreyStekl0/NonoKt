@@ -2,7 +2,6 @@ package dev.stekl0.nonokt.feature.levels.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -96,8 +95,8 @@ private fun LevelTile(
         modifier =
             modifier
                 .aspectRatio(1f)
-                .testTag("level:${level.id}")
-                .clickable(onClick = onClick),
+                .testTag("level:${level.id}"),
+        onClick = onClick,
         border =
             BorderStroke(
                 width = LevelTileBorderWidth,
